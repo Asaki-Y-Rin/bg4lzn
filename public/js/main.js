@@ -521,7 +521,7 @@ async function router() {
 // re-render brand/footer i18n
 function applyStaticI18n() {
   const brand = document.querySelector('.brand .t');
-  if (brand) brand.textContent = pick('BG4LZN 的电台小屋', 'BG4LZN\'s Radio Shack');
+  if (brand) brand.textContent = pick('BG4LZN 的电波小窝', 'BG4LZN\'s Radio Shack');
   const foot = document.querySelector('[data-i18n="footer"]');
   if (foot) foot.textContent = t('footer');
 }

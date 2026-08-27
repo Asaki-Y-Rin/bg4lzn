@@ -9,7 +9,7 @@ window.I18N = {
       onAir: 'ON AIR', offAir: 'OFF AIR',
       onAirHint: 'ON AIR：正在发射中 · OFF AIR：当前未发射。自动(pskreporter)或手动判断。',
       latest: '最新文章', viewAll: '全部文章',
-      radio: '电台小屋', recentQsos: '近期通联', recentDemo: '目前还没有通联记录，去后台配置 LoTW 证书，下载你的日志吧。',
+      radio: '电波小窝', recentQsos: '近期通联', recentDemo: '目前还没有通联记录，去后台配置 LoTW 证书，下载你的日志吧。',
       readMore: '阅读',
       quick: {
         title: '快捷入口',
@@ -22,7 +22,7 @@ window.I18N = {
     },
     about: {
       title: '关于我',
-      sub: 'Hi，我是 BG4LZN。欢迎来到我的电台小屋。',
+      sub: 'Hi，我是 BG4LZN。欢迎来到我的电波小窝。',
       role: 'B 类业余无线电操作员',
       intro1: '我来自山东泰安，一名 B 类业余无线电操作员，呼号 BG4LZN。',
       intro2: '业余无线电让我认识世界：架设天线、调试设备、追逐 DX，也让我认识了天南海北的友台。这里记录了我通联、装备与热爱故事的点点滴滴。',
@@ -38,7 +38,7 @@ window.I18N = {
     },
     articles: {
       title: '文章',
-      sub: '电台小屋里的随笔与器材记录。',
+      sub: '电波小窝里的随笔与器材记录。',
       empty: '还没有文章，去后台写一篇吧。',
       share: '分享',
       like: '点赞', liked: '已赞',
@@ -70,7 +70,7 @@ window.I18N = {
       name: '昵称', ph: '一句话或一段话，欢迎分享你对无线电的热爱……', submit: '发布',
       empty: '还没有留言，来抢沙发吧。'
     },
-    footer: '© BG4LZN 的电台小屋 · 通联地球，73 de BG4LZN',
+    footer: '© BG4LZN 的电波小窝 · 拥抱世界，GL! DE BG4LZN',
     lang: { zh: '中', en: 'EN' }
   },
 
@@ -143,7 +143,7 @@ window.I18N = {
       name: 'Name', ph: 'A word or two — share your love for radio…', submit: 'Post',
       empty: 'No messages yet — be the first!'
     },
-    footer: '© BG4LZN\'s Radio Shack · Around the world, 73 de BG4LZN',
+    footer: '© BG4LZN\'s Radio Shack · Around the world, GL! DE BG4LZN',
     lang: { zh: '中', en: 'EN' }
   }
 };

@@ -57,7 +57,7 @@ async function dashboard() {
     const [stats, site] = await Promise.all([fetchJSON('/api/admin/stats'), fetchJSON('/api/admin/site')]);
     main.innerHTML = `
       <div class="page-title">后台总览</div>
-      <div class="page-sub">欢迎回来，BG4LZN。管理你的电台小屋。</div>
+      <div class="page-sub">欢迎回来，BG4LZN。管理你的电波小窝。</div>
       <div class="stat-grid">
         <div class="stat-card"><div class="n">${stats.articles}</div><div class="l">文章</div></div>
         <div class="stat-card"><div class="n">${stats.logs}</div><div class="l">通联日志</div></div>

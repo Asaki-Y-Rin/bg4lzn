@@ -1,7 +1,7 @@
 {
   "name": "bg4lzn-radio-hut",
   "version": "1.0.0",
-  "description": "BG4LZN 的电台小屋 - 业余无线电个人博客",
+  "description": "BG4LZN 的电波小窝 - 业余无线电个人博客",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
