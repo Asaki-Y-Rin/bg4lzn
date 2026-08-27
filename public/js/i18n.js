@@ -83,7 +83,7 @@ window.I18N = {
       onAir: 'ON AIR', offAir: 'OFF AIR',
       onAirHint: 'ON AIR: transmitting now · Listening: not transmitting, just monitoring. Auto (pskreporter) or manual.',
       latest: 'Latest Articles', viewAll: 'All Articles',
-      radio: 'Radio Shack', recentQsos: 'Recent QSOs', recentDemo: 'No QSOs yet — configure your LoTW certificate in the admin panel to sync your log.',
+      radio: 'Radio Nook', recentQsos: 'Recent QSOs', recentDemo: 'No QSOs yet — configure your LoTW certificate in the admin panel to sync your log.',
       readMore: 'Read',
       quick: {
         title: 'Quick Access',
@@ -143,7 +143,7 @@ window.I18N = {
       name: 'Name', ph: 'A word or two — share your love for radio…', submit: 'Post',
       empty: 'No messages yet — be the first!'
     },
-    footer: '© BG4LZN\'s Radio Shack · Around the world, GL! DE BG4LZN',
+    footer: '© BG4LZN\'s Radio Nook · Around the world, GL! DE BG4LZN',
     lang: { zh: '中', en: 'EN' }
   }
 };

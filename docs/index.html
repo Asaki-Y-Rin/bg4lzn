@@ -326,7 +326,7 @@ table.logs .tdate { color: var(--ink-soft); }
         <div class="logo"><img src="https://i.ibb.co/wh8QLjNp/picture.jpg" alt="BG4LZN"></div>
         <div>
           <div class="t" data-i18n="brand">BG4LZN 的电波小窝</div>
-          <div class="s">AMATEUR RADIO SHACK</div>
+          <div class="s">AMATEUR RADIO NOOK</div>
         </div>
       </a>
       <div class="nav-links" id="navLinks"></div>
@@ -437,7 +437,7 @@ window.I18N = {
       onAir: 'ON AIR', offAir: 'OFF AIR',
       onAirHint: 'ON AIR: transmitting now · Listening: not transmitting, just monitoring. Auto (pskreporter) or manual.',
       latest: 'Latest Articles', viewAll: 'All Articles',
-      radio: 'Radio Shack', recentQsos: 'Recent QSOs', recentDemo: 'No QSOs yet — configure your LoTW certificate in the admin panel to sync your log.',
+      radio: 'Radio Nook', recentQsos: 'Recent QSOs', recentDemo: 'No QSOs yet — configure your LoTW certificate in the admin panel to sync your log.',
       readMore: 'Read',
       quick: {
         title: 'Quick Access',
@@ -497,7 +497,7 @@ window.I18N = {
       name: 'Name', ph: 'A word or two — share your love for radio…', submit: 'Post',
       empty: 'No messages yet — be the first!'
     },
-    footer: '© BG4LZN\'s Radio Shack · Around the world, GL! DE BG4LZN',
+    footer: '© BG4LZN\'s Radio Nook · Around the world, GL! DE BG4LZN',
     lang: { zh: '中', en: 'EN' }
   }
 };
@@ -1045,7 +1045,7 @@ async function router() {
 // re-render brand/footer i18n
 function applyStaticI18n() {
   const brand = document.querySelector('.brand .t');
-  if (brand) brand.textContent = pick('BG4LZN 的电波小窝', 'BG4LZN\'s Radio Shack');
+  if (brand) brand.textContent = pick('BG4LZN 的电波小窝', 'BG4LZN\'s Radio Nook');
   const foot = document.querySelector('[data-i18n="footer"]');
   if (foot) foot.textContent = t('footer');
 }

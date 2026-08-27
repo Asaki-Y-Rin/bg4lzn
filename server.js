@@ -157,7 +157,7 @@ async function ensureData() {
       {
         id: uid(),
         title: '欢迎来到我的电波小窝',
-        title_en: 'Welcome to my Radio Shack',
+        title_en: 'Welcome to my Radio Nook',
         tags: ['感想', '入门'],
         tags_en: ['News', 'Intro'],
         date: '2026-08-01',
@@ -165,7 +165,7 @@ async function ensureData() {
         excerpt: '这是我的新业余无线电博客的第一篇文章。在这里我会分享我的通联记录、设备与天线折腾的故事。',
         excerpt_en: 'This is the first post of my new amateur radio blog. I will share my QSO log, gear and antenna journeys here.',
         content: '大家好，我是 BG4LZN，来自山东泰安，B 类业余无线电操作员。这座“电波小窝”是我记录业余无线电生活的地方——从架设天线、组装电台，到与世界各地的友台通联。欢迎常来坐坐，也欢迎在留言板里给我留言！\n\nGL! DE BG4LZN',
-        content_en: "Hi, I'm BG4LZN from Tai'an, Shandong, a Class B amateur radio operator. This 'Radio Shack' is where I document my ham life — from antennas and rigs to QSOs with hams all over the world. Drop by anytime and leave a note in the guestbook!\n\nGL! DE BG4LZN",
+        content_en: "Hi, I'm BG4LZN from Tai'an, Shandong, a Class B amateur radio operator. This 'Radio Nook' is where I document my ham life — from antennas and rigs to QSOs with hams all over the world. Drop by anytime and leave a note in the guestbook!\n\nGL! DE BG4LZN",
         views: 0,
         likes: [],
         comments: [],
