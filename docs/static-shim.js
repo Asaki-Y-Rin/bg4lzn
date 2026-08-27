@@ -80,12 +80,16 @@
     });
   }
   function proxyHome() {
-    return fetchInner('/api/articles?pageSize=5').then(function (j) {
+    return Promise.all([
+      fetchInner('/api/articles?pageSize=5'),
+      fetchInner('/api/qso/summary')
+    ]).then(function (rs) {
+      var j = rs[0], q = rs[1];
       var arts = [];
       if (j && j.success) {
         arts = (j.data || []).slice().sort(function (a, b) { return String(b.published_at || '').localeCompare(String(a.published_at || '')); });
       }
-      var lgs = sorted(enriched()).slice(0, 5);
+      var lgs = (q && q.ok && Array.isArray(q.logs)) ? q.logs : [];
       return resp({
         ok: true,
         site: D.site || {},
@@ -118,9 +122,15 @@
     if (ma) return proxyArticle(decodeURIComponent(ma[1]));
     if (/\/api\/articles$/.test(u)) return proxyArticles();
     // ---- 静态数据 ----
+    if (/\/api\/logs/.test(u)) {
+      // 转发内堂 QSO 列表 (兼容旧站格式)
+      return fetchInner('/api/qso/list' + (u.indexOf('?') >= 0 ? u.slice(u.indexOf('?')) : '')).then(function (j) {
+        if (!j || !j.ok) return resp({ ok: true, stations: [], activeCall: dc, logs: [], total: 0, page: 1, pages: 1, per: 30, callsign: dc, lastSync: null });
+        return resp(j);
+      });
+    }
     if (/\/api\/site$/.test(u)) return resp({ ok: true, site: D.site || {} });
     if (/\/api\/copy$/.test(u)) return resp({ ok: true, copy: D.copy || {} });
-    if (/\/api\/logs/.test(u)) return resp(apiLogs(u));
     if (/\/api\/guestbook$/.test(u)) return resp({ ok: true, messages: (D.guestbook || []).filter(function (m) { return m.status !== 'hidden'; }) });
     var mbs = u.match(/bbs\.bg4lzn\.cn\/api\.php.*action=comments.*article=([^&]+)/);
     if (mbs) { var aid = decodeURIComponent(mbs[1]); return resp({ ok: true, comments: (D.bbsComments || {})[aid] || [] }); }
