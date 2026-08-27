@@ -37,7 +37,7 @@ document.querySelectorAll('.side-link[data-view]').forEach(a => {
 });
 document.getElementById('logoutBtn').addEventListener('click', async () => {
   try { await fetchJSON('/api/auth/logout', { method: 'POST' }); } catch(e) {}
-  location.href = '/adminlogin';
+  location.href = './adminlogin.html';
 });
 document.getElementById('modalMask').addEventListener('click', e => { if (e.target.id === 'modalMask') closeModal(); });
 
@@ -45,9 +45,9 @@ document.getElementById('modalMask').addEventListener('click', e => { if (e.targ
 async function checkAuth() {
   try {
     const d = await fetchJSON('/api/auth/me');
-    if (!d.loggedIn) { location.href = '/adminlogin'; return false; }
+    if (!d.loggedIn) { location.href = './adminlogin.html'; return false; }
     return true;
-  } catch (e) { location.href = '/adminlogin'; return false; }
+  } catch (e) { location.href = './adminlogin.html'; return false; }
 }
 
 // ---------- DASHBOARD ----------

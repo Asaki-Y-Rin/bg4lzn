@@ -85,8 +85,8 @@ wel = wel.replace("location.href='/home'", "location.href='./index.html#/home'")
 wel = wel.replace('href="/picture/picture.jpg"', 'href="picture/picture.jpg"');
 writeDoc('welcome.html', wel);
 
-// static-shim.js (BG4LZN 适配版, 与 main 版一致)
-fs.copyFileSync(path.join(ROOT, '..', 'ba4ihb-blog-main', 'docs', 'static-shim.js'), path.join(DOCS, 'static-shim.js'));
+// static-shim.js (os 版自治: 前台只读 API + 静态后台只读模拟)
+fs.copyFileSync(path.join(ROOT, 'static-shim.js'), path.join(DOCS, 'static-shim.js'));
 
 // 静态资源 (picture.jpg / backgroud.gif 均已改用 i.ibb.co 快速外链, 不再随站分发)
 fs.rmSync(path.join(DOCS, 'backgroud'), { recursive: true, force: true });
@@ -98,12 +98,16 @@ function staticizeAdmin(srcName) {
   a = a.replace('href="/css/style.css"', 'href="css/style.css"');
   a = a.replace('src="/js/admin.js"', 'src="js/admin.js"');
   a = a.replace('href="/home"', 'href="./index.html#/home"');
+  a = a.replace("location.href = '/admin'", "location.href = './admin.html'");
   return a;
 }
 writeDoc('adminlogin.html', staticizeAdmin('adminlogin.html'));
 writeDoc('admin.html', staticizeAdmin('admin.html'));
 fs.copyFileSync(path.join(PUB, 'css', 'style.css'), path.join(DOCS, 'css', 'style.css'));
-fs.copyFileSync(path.join(PUB, 'js', 'admin.js'), path.join(DOCS, 'js', 'admin.js'));
+// admin.js: 静态版跳转相对化 (绝对 /adminlogin 在子路径下 404)
+let adminJs = readPub('js/admin.js');
+adminJs = adminJs.split("location.href = '/adminlogin'").join("location.href = './adminlogin.html'");
+fs.writeFileSync(path.join(DOCS, 'js', 'admin.js'), adminJs, 'utf8');
 // 清理旧 picture 目录 (外链后不再需要)
 fs.rmSync(path.join(DOCS, 'picture'), { recursive: true, force: true });
 
