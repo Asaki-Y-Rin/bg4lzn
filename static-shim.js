@@ -60,6 +60,18 @@
       return r.json();
     }).catch(function () { return null; });
   }
+  function fetchInnerPost(path, body) {
+    return OF(INNER + path, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) }).then(function (r) {
+      return r.json();
+    }).catch(function () { return null; });
+  }
+  // 内堂评论 -> 主站评论 {name, date, text}
+  function mapComments(list) {
+    return (list || []).map(function (c) {
+      return { name: c.nickname || 'Q', date: c.created_at || '', text: c.content || '' };
+    });
+  }
+  var GUESTBOOK_ARTICLE = 2; // 内堂「留言板」文章 id
   // 内堂文章列表 -> 旧站 articles (按日期倒序)
   function proxyArticles() {
     return fetchInner('/api/articles?pageSize=50').then(function (j) {
@@ -115,6 +127,32 @@
     }
     if (/\/api\/admin\/site$/.test(u)) return resp({ ok: true, site: D.site || {} });
     if (/\/api\/admin\//.test(u)) return resp({ ok: false, error: '静态版只读：完整后台请部署服务器版' }, 400);
+    // ---- 评论/留言/点赞: 转发内堂 (POST 放行) ----
+    var likeM = u.match(/\/api\/articles\/([^/?#]+)\/like$/);
+    if (likeM && method === 'POST') {
+      return fetchInnerPost('/api/articles/' + encodeURIComponent(likeM[1]) + '/like', {}).then(function (j) {
+        if (!j || j.success === false) return resp({ ok: false, error: 'like_failed' }, 400);
+        return resp({ ok: true, liked: !!(j.data && j.data.liked), count: 0 });
+      });
+    }
+    if (/\/api\.php\?action=addcomment/.test(u) && method === 'POST') {
+      return (opts && opts.body ? Promise.resolve(opts.body) : Promise.resolve('{}')).then(function (raw) {
+        var b = {}; try { b = JSON.parse(raw); } catch (e) {}
+        return fetchInnerPost('/api/articles/' + encodeURIComponent(String(b.article || '')) + '/comments', { nickname: b.name || '', email: '', content: b.text || '' });
+      }).then(function (j) {
+        if (!j || !j.success) return resp({ ok: false, error: 'comment_failed' }, 400);
+        return resp({ ok: true });
+      });
+    }
+    if (/\/api\.php\?action=addguestbook/.test(u) && method === 'POST') {
+      return (opts && opts.body ? Promise.resolve(opts.body) : Promise.resolve('{}')).then(function (raw) {
+        var b = {}; try { b = JSON.parse(raw); } catch (e) {}
+        return fetchInnerPost('/api/articles/' + GUESTBOOK_ARTICLE + '/comments', { nickname: b.name || '', email: '', content: b.text || '' });
+      }).then(function (j) {
+        if (!j || !j.success) return resp({ ok: false, error: 'guestbook_failed' }, 400);
+        return resp({ ok: true });
+      });
+    }
     // ---- 其余写操作一律只读提示 ----
     if (method !== 'GET') return resp({ ok: false, error: '静态导出仅支持浏览，评论/点赞/留言/后台需在线服务运行' }, 400);
     // ---- 内堂代理: 文章动态化 ----
@@ -122,6 +160,19 @@
     var ma = u.match(/\/api\/articles\/([^/?#]+)/);
     if (ma) return proxyArticle(decodeURIComponent(ma[1]));
     if (/\/api\/articles$/.test(u)) return proxyArticles();
+    var cm = u.match(/\/api\.php\?action=comments&article=([^&]+)/);
+    if (cm) {
+      return fetchInner('/api/articles/' + encodeURIComponent(decodeURIComponent(cm[1])) + '/comments').then(function (j) {
+        if (!j || !j.success) return resp({ ok: true, comments: [] });
+        return resp({ ok: true, comments: mapComments(j.data) });
+      });
+    }
+    if (/\/api\.php\?action=guestbook/.test(u)) {
+      return fetchInner('/api/articles/' + GUESTBOOK_ARTICLE + '/comments').then(function (j) {
+        if (!j || !j.success) return resp({ ok: true, messages: [] });
+        return resp({ ok: true, messages: mapComments(j.data).map(function (m) { return { name: m.name, text: m.text, date: m.date }; }) });
+      });
+    }
     // ---- 静态数据 ----
     if (/\/api\/logs/.test(u)) {
       // 转发内堂 QSO 列表 (兼容旧站格式)
