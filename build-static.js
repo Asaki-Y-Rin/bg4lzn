@@ -81,7 +81,7 @@ writeDoc('index.html', html);
 
 // welcome.html: 相对路径版
 let wel = readPub('welcome.html');
-wel = wel.replace('src="/backgroud/backgroud.mp4"', 'src="backgroud/backgroud.mp4"');
+wel = wel.replace('src="/backgroud/backgroud.gif"', 'src="backgroud/backgroud.gif"');
 wel = wel.replace("location.href='/home'", "location.href='./index.html#/home'");
 wel = wel.replace('href="/picture/picture.jpg"', 'href="picture/picture.jpg"');
 writeDoc('welcome.html', wel);
@@ -90,7 +90,9 @@ writeDoc('welcome.html', wel);
 fs.copyFileSync(path.join(ROOT, '..', 'ba4ihb-blog-main', 'docs', 'static-shim.js'), path.join(DOCS, 'static-shim.js'));
 
 // 静态资源 (picture.jpg 已改用 i.ibb.co 快速外链, 不再随站分发)
-fs.copyFileSync(path.join(ROOT, 'backgroud', 'backgroud.mp4'), path.join(DOCS, 'backgroud', 'backgroud.mp4'));
+fs.rmSync(path.join(DOCS, 'backgroud'), { recursive: true, force: true });
+fs.mkdirSync(path.join(DOCS, 'backgroud'), { recursive: true });
+fs.copyFileSync(path.join(ROOT, 'backgroud', 'backgroud.gif'), path.join(DOCS, 'backgroud', 'backgroud.gif'));
 fs.cpSync(path.join(PUB, 'uploads'), path.join(DOCS, 'uploads'), { recursive: true });
 
 // 后台管理页 (静态版可打开页面; 登录/管理功能需服务器版后端)
@@ -111,6 +113,6 @@ fs.rmSync(path.join(DOCS, 'picture'), { recursive: true, force: true });
 console.log('静态版已生成于 docs/:');
 console.log('  index.html ' + (fs.statSync(path.join(DOCS, 'index.html')).size / 1024).toFixed(0) + ' KB');
 console.log('  welcome.html ' + (fs.statSync(path.join(DOCS, 'welcome.html')).size / 1024).toFixed(0) + ' KB');
-console.log('  backgroud.mp4 ' + (fs.statSync(path.join(DOCS, 'backgroud', 'backgroud.mp4')).size / 1024 / 1024).toFixed(1) + ' MB');
+console.log('  backgroud.gif ' + (fs.statSync(path.join(DOCS, 'backgroud', 'backgroud.gif')).size / 1024 / 1024).toFixed(1) + ' MB');
 console.log('  内嵌数据: articles=' + DATA.articles.length + ' logs=' + DATA.logs.length + ' guestbook=' + DATA.guestbook.length + ' bbsComments=' + Object.keys(bbsComments).length + ' 组');
 console.log('  后台: adminlogin.html + admin.html + css/style.css + js/admin.js');

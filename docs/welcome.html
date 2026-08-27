@@ -13,7 +13,7 @@
       overflow: hidden; color: #fff;
     }
     .stage { position: relative; height: 100vh; width: 100vw; overflow: hidden; }
-    video.bg {
+    .bg {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;
     }
     .scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(60,40,30,.30), rgba(30,20,15,.55) 80%); backdrop-filter: blur(1px); }
@@ -39,7 +39,7 @@
 </head>
 <body>
   <div class="stage">
-    <video class="bg" src="backgroud/backgroud.mp4" autoplay muted loop playsinline preload="auto"></video>
+    <img class="bg" src="backgroud/backgroud.gif" alt="">
     <div class="scrim"></div>
 
     <div class="lang">
@@ -88,11 +88,6 @@
     document.querySelectorAll('.lang button').forEach(b => {
       b.addEventListener('click', () => { lang = b.dataset.lang; localStorage.setItem('bh_lang', lang); apply(); });
     });
-    // try autoplay; some browsers block unmuted, ours is muted so OK. Retry on interaction anyway.
-    const vid = document.querySelector('video.bg');
-    vid.muted = true;
-    const p = vid.play();
-    if (p && p.catch) p.catch(() => {});
     apply();
   </script>
 </body>
