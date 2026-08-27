@@ -9,5 +9,16 @@
     "likes": 0,
     "comments": 0,
     "slug": "初踏电磁生众趣"
+  },
+  {
+    "id": "2",
+    "title": "留言板",
+    "date": "2026-08-27",
+    "cover": "",
+    "excerpt": "欢迎留言",
+    "content_md": "欢迎在留言板留下您的足迹！GL! DE BG4LZN",
+    "likes": 0,
+    "comments": 0,
+    "slug": "guestbook"
   }
-]// tamper
+]
