@@ -28,6 +28,7 @@
     .back { display: block; text-align: center; margin-top: 18px; font-size: 13px; color: var(--ink-soft); }
     .back:hover { color: var(--accent-deep); }
   </style>
+  <script src="static-shim.js"></script>
 </head>
 <body>
   <div class="bg-orb"><div class="orb o1"></div><div class="orb o2"></div></div>
@@ -64,6 +65,5 @@
     btn.onclick = doLogin;
     document.getElementById('pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   </script>
-  <script src="static-shim.js"></script>
 </body>
 </html>
