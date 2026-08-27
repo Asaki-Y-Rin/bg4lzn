@@ -143,6 +143,10 @@
         var arts = (a && a.success && a.pagination) ? (a.pagination.total || 0) : ((a && a.data ? a.data.length : 0));
         var logs = (q && q.stats) ? q.stats.total : 0;
         var gbs = (g && g.success && Array.isArray(g.data)) ? g.data.length : 0;
+        // 兜底: 内堂不可达时以小窝静态数据计数 (永不为零)
+        if (!a || !a.success) arts = (D.articles || []).length;
+        if (!q || !q.stats) logs = (D.logs || []).length;
+        if (!g || !g.success) gbs = (D.guestbook || []).length;
         return resp({ ok: true, articles: arts, logs: logs, guestbook: gbs, comments: gbs, logLikes: 0 });
       });
     }
