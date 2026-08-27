@@ -82,9 +82,10 @@
   function proxyHome() {
     return Promise.all([
       fetchInner('/api/articles?pageSize=5'),
-      fetchInner('/api/qso/summary')
+      fetchInner('/api/qso/summary'),
+      fetchInner('/api/qso/onair')
     ]).then(function (rs) {
-      var j = rs[0], q = rs[1];
+      var j = rs[0], q = rs[1], oa = rs[2];
       var arts = [];
       if (j && j.success) {
         arts = (j.data || []).slice().sort(function (a, b) { return String(b.published_at || '').localeCompare(String(a.published_at || '')); });
@@ -93,7 +94,7 @@
       return resp({
         ok: true,
         site: D.site || {},
-        onAirInfo: D.onAirInfo || null,
+        onAirInfo: (oa && oa.onAirInfo) || D.onAirInfo || null,
         latestArticles: arts.slice(0, 2).map(mapArt),
         latestLogs: lgs
       });
