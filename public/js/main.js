@@ -173,7 +173,7 @@ function aboutView() {
     <div class="section-sub">${escapeHtml(a.sub)}</div>
   </div>
   <div class="about-wrap">
-    <div class="avatar"><img src="/picture/picture.jpg" alt="BG4LZN"></div>
+    <div class="avatar"><img src="https://i.ibb.co/wh8QLjNp/picture.jpg" alt="BG4LZN"></div>
     <div class="about-info">
       <div class="h">BG4LZN</div>
       <div class="role">${escapeHtml(a.role)}</div>

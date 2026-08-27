@@ -72,9 +72,10 @@ const inject = '  <script>window.__DATA__=' + dataJson + ';</script>\n' +
 html = html.replace('<div class="toast" id="toast"></div>', '<div class="toast" id="toast"></div>\n' + inject);
 
 // ---------- 5. 写产物 ----------
-fs.mkdirSync(path.join(DOCS, 'picture'), { recursive: true });
 fs.mkdirSync(path.join(DOCS, 'uploads'), { recursive: true });
 fs.mkdirSync(path.join(DOCS, 'backgroud'), { recursive: true });
+fs.mkdirSync(path.join(DOCS, 'css'), { recursive: true });
+fs.mkdirSync(path.join(DOCS, 'js'), { recursive: true });
 
 writeDoc('index.html', html);
 
@@ -88,13 +89,28 @@ writeDoc('welcome.html', wel);
 // static-shim.js (BG4LZN 适配版, 与 main 版一致)
 fs.copyFileSync(path.join(ROOT, '..', 'ba4ihb-blog-main', 'docs', 'static-shim.js'), path.join(DOCS, 'static-shim.js'));
 
-// 静态资源
-fs.copyFileSync(path.join(ROOT, 'picture', 'picture.jpg'), path.join(DOCS, 'picture', 'picture.jpg'));
+// 静态资源 (picture.jpg 已改用 i.ibb.co 快速外链, 不再随站分发)
 fs.copyFileSync(path.join(ROOT, 'backgroud', 'backgroud.mp4'), path.join(DOCS, 'backgroud', 'backgroud.mp4'));
 fs.cpSync(path.join(PUB, 'uploads'), path.join(DOCS, 'uploads'), { recursive: true });
+
+// 后台管理页 (静态版可打开页面; 登录/管理功能需服务器版后端)
+function staticizeAdmin(srcName) {
+  let a = readPub(srcName);
+  a = a.replace('href="/css/style.css"', 'href="css/style.css"');
+  a = a.replace('src="/js/admin.js"', 'src="js/admin.js"');
+  a = a.replace('href="/home"', 'href="./index.html#/home"');
+  return a;
+}
+writeDoc('adminlogin.html', staticizeAdmin('adminlogin.html'));
+writeDoc('admin.html', staticizeAdmin('admin.html'));
+fs.copyFileSync(path.join(PUB, 'css', 'style.css'), path.join(DOCS, 'css', 'style.css'));
+fs.copyFileSync(path.join(PUB, 'js', 'admin.js'), path.join(DOCS, 'js', 'admin.js'));
+// 清理旧 picture 目录 (外链后不再需要)
+fs.rmSync(path.join(DOCS, 'picture'), { recursive: true, force: true });
 
 console.log('静态版已生成于 docs/:');
 console.log('  index.html ' + (fs.statSync(path.join(DOCS, 'index.html')).size / 1024).toFixed(0) + ' KB');
 console.log('  welcome.html ' + (fs.statSync(path.join(DOCS, 'welcome.html')).size / 1024).toFixed(0) + ' KB');
 console.log('  backgroud.mp4 ' + (fs.statSync(path.join(DOCS, 'backgroud', 'backgroud.mp4')).size / 1024 / 1024).toFixed(1) + ' MB');
 console.log('  内嵌数据: articles=' + DATA.articles.length + ' logs=' + DATA.logs.length + ' guestbook=' + DATA.guestbook.length + ' bbsComments=' + Object.keys(bbsComments).length + ' 组');
+console.log('  后台: adminlogin.html + admin.html + css/style.css + js/admin.js');
