@@ -120,10 +120,18 @@
     if (/\/api\/auth\/logout$/.test(u)) return resp({ ok: true });
     if (/\/api\/auth\/me$/.test(u)) return resp({ ok: true, loggedIn: true, user: 'admin' });
     if (/\/api\/admin\/stats$/.test(u)) {
-      var arts = D.articles || [], lgs = D.logs || [], gbs = D.guestbook || [];
-      var cc = 0; for (var k in (D.bbsComments || {})) cc += (D.bbsComments[k] || []).length;
-      var likes = 0; arts.forEach(function (a) { likes += Array.isArray(a.likes) ? a.likes.length : (a.likes || 0); });
-      return resp({ ok: true, articles: arts.length, logs: lgs.length, guestbook: gbs.length, comments: cc, logLikes: likes });
+      // 统计自内堂实时拉取 (文章/日志/留言/评论)
+      return Promise.all([
+        fetchInner('/api/articles?pageSize=1'),
+        fetchInner('/api/qso/stats'),
+        fetchInner('/api/articles/' + GUESTBOOK_ARTICLE + '/comments')
+      ]).then(function (rs) {
+        var a = rs[0], q = rs[1], g = rs[2];
+        var arts = (a && a.success && a.pagination) ? (a.pagination.total || 0) : ((a && a.data ? a.data.length : 0));
+        var logs = (q && q.stats) ? q.stats.total : 0;
+        var gbs = (g && g.success && Array.isArray(g.data)) ? g.data.length : 0;
+        return resp({ ok: true, articles: arts, logs: logs, guestbook: gbs, comments: gbs, logLikes: 0 });
+      });
     }
     if (/\/api\/admin\/site$/.test(u)) return resp({ ok: true, site: D.site || {} });
     if (/\/api\/admin\//.test(u)) return resp({ ok: false, error: '静态版只读：完整后台请部署服务器版' }, 400);
