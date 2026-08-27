@@ -67,8 +67,9 @@ html = html.replace('</head>', '  <script>if (!location.hash) location.replace(\
 
 // ---------- 4. 注入数据 + shim ----------
 const dataJson = JSON.stringify(DATA);
+const shimCode = fs.readFileSync(path.join(ROOT, 'static-shim.js'), 'utf8');
 const inject = '  <script>window.__DATA__=' + dataJson + ';</script>\n' +
-               '  <script src="static-shim.js"></script>\n';
+               '  <script>' + shimCode + '</script>\n';
 html = html.replace('<div class="toast" id="toast"></div>', '<div class="toast" id="toast"></div>\n' + inject);
 
 // ---------- 5. 写产物 ----------
