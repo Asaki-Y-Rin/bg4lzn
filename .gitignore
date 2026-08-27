@@ -1,0 +1,10 @@
+# deps
+node_modules/
+
+# runtime data (keys 私钥 / uploads 运行时上传 不入库)
+data/keys/
+data/uploads/
+
+*.log
+.DS_Store
+Thumbs.db

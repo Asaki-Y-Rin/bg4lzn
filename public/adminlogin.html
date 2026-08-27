@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>后台登录 · BG4LZN 的电台小屋</title>
+  <link rel="icon" href="/picture/picture.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg); padding: 20px; }
+    .bg-orb { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .5; }
+    .orb.o1 { width: 340px; height: 340px; background: #f9c9a8; top: -60px; left: -40px; }
+    .orb.o2 { width: 300px; height: 300px; background: #c4e0e8; bottom: -70px; right: -40px; }
+    .login-wrap { position: relative; z-index: 1; width: 100%; max-width: 400px; }
+    .card { box-shadow: var(--shadow); }
+    .login-card { padding: 40px 36px; }
+    .logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+    .logo-row .logo { width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 22px; }
+    .logo-row .t { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; }
+    .logo-row .s { font-size: 11px; color: var(--ink-soft); letter-spacing: 3px; margin-top: 2px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; color: var(--ink-soft); margin-bottom: 7px; font-weight: 600; }
+    .field input { width: 100%; border: 1px solid var(--line); border-radius: 13px; padding: 13px 15px; font-size: 15px; background: #fff; font-family: inherit; transition: border .2s; }
+    .field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(247,158,126,.12); }
+    .btn.full { width: 100%; margin-top: 6px; }
+    .err { color: #e05656; font-size: 13px; min-height: 18px; margin: 4px 0 8px; }
+    .back { display: block; text-align: center; margin-top: 18px; font-size: 13px; color: var(--ink-soft); }
+    .back:hover { color: var(--accent-deep); }
+  </style>
+</head>
+<body>
+  <div class="bg-orb"><div class="orb o1"></div><div class="orb o2"></div></div>
+  <div class="login-wrap">
+    <div class="card login-card">
+      <div class="logo-row">
+        <div class="logo"><img src="/picture/picture.jpg" alt="BG4LZN"></div>
+        <div><div class="t">电台小屋 · Admin</div><div class="s">RADIO SHACK</div></div>
+      </div>
+      <div class="field"><label>账号 Username</label><input id="user" value="admin"></div>
+      <div class="field"><label>密码 Password</label><input id="pass" type="password" placeholder="••••••"></div>
+      <div class="err" id="err"></div>
+      <button class="btn accent full" id="loginBtn">登 录</button>
+      <a href="/home" class="back">← 返回小屋首页</a>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('loginBtn');
+    async function doLogin() {
+      const username = document.getElementById('user').value.trim();
+      const password = document.getElementById('pass').value;
+      const err = document.getElementById('err');
+      err.textContent = '';
+      btn.disabled = true; btn.textContent = '登录中…';
+      try {
+        const r = await fetch('/api/auth/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ username, password }) });
+        const d = await r.json();
+        if (d.ok) { location.href = '/admin'; return; }
+        err.textContent = d.error === 'invalid' ? '账号或密码错误' : '登录失败';
+      } catch (e) { err.textContent = '网络错误'; }
+      btn.disabled = false; btn.textContent = '登 录';
+    }
+    btn.onclick = doLogin;
+    document.getElementById('pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  </script>
+</body>
+</html>
