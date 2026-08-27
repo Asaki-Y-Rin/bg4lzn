@@ -99,6 +99,8 @@ function staticizeAdmin(srcName) {
   a = a.replace('src="/js/admin.js"', 'src="js/admin.js"');
   a = a.replace('href="/home"', 'href="./index.html#/home"');
   a = a.replace("location.href = '/admin'", "location.href = './admin.html'");
+  // 挂载 static-shim: admin 页面的 /api/auth/* 与 /api/admin/* 由 shim 只读模拟
+  a = a.replace('</body>', '  <script src="static-shim.js"></script>\n</body>');
   return a;
 }
 writeDoc('adminlogin.html', staticizeAdmin('adminlogin.html'));
