@@ -75,14 +75,23 @@
   // 内堂文章列表 -> 旧站 articles (按日期倒序)
   function proxyArticles() {
     return fetchInner('/api/articles?pageSize=50').then(function (j) {
-      if (!j || !j.success) return resp({ ok: false, error: 'backend_unavailable' }, 502);
+      if (!j || !j.success) {
+        // 回退静态数据
+        var fallback = (D.articles || []).slice().sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
+        return resp({ ok: true, articles: fallback });
+      }
       var list = (j.data || []).slice().sort(function (a, b) { return String(b.published_at || '').localeCompare(String(a.published_at || '')); });
       return resp({ ok: true, articles: list.map(mapArt) });
     });
   }
   function proxyArticle(id) {
     return fetchInner('/api/articles/' + encodeURIComponent(id)).then(function (j) {
-      if (!j || !j.success) return resp({ ok: false, error: 'not_found' }, 404);
+      if (!j || !j.success) {
+        // 回退静态文章
+        var fa = (D.articles || []).find(function (x) { return String(x.id) === String(id); });
+        if (fa) return resp({ ok: true, article: fa, liked: false });
+        return resp({ ok: false, error: 'not_found' }, 404);
+      }
       var art = mapArt(j.data);
       // 拉取评论数以填充卡片
       return fetchInner('/api/articles/' + encodeURIComponent(id) + '/comments').then(function (cj) {
@@ -101,12 +110,16 @@
       var arts = [];
       if (j && j.success) {
         arts = (j.data || []).slice().sort(function (a, b) { return String(b.published_at || '').localeCompare(String(a.published_at || '')); });
+      } else {
+        // 回退静态数据 (内堂不可达时首页仍有文章)
+        arts = (D.articles || []).slice().sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
       }
       var lgs = (q && q.ok && Array.isArray(q.logs)) ? q.logs : [];
+      var onAir = (oa && oa.onAirInfo) || D.onAirInfo || null;
       return resp({
         ok: true,
         site: D.site || {},
-        onAirInfo: (oa && oa.onAirInfo) || D.onAirInfo || null,
+        onAirInfo: onAir,
         latestArticles: arts.slice(0, 2).map(mapArt),
         latestLogs: lgs
       });
