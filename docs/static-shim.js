@@ -50,6 +50,7 @@
       cover: a.cover_image || '',
       excerpt: a.excerpt || '',
       content_md: a.content_md || '',
+      content: a.content_md || a.content || '',
       likes: a.like_count || 0,
       comments: 0,
       slug: a.slug || ''
@@ -89,7 +90,11 @@
       if (!j || !j.success) {
         // 回退静态文章
         var fa = (D.articles || []).find(function (x) { return String(x.id) === String(id); });
-        if (fa) return resp({ ok: true, article: fa, liked: false });
+        if (fa) {
+          var fb = Object.assign({}, fa);
+          if (!fb.content) fb.content = fb.content_md || '';
+          return resp({ ok: true, article: fb, liked: false });
+        }
         return resp({ ok: false, error: 'not_found' }, 404);
       }
       var art = mapArt(j.data);

@@ -282,7 +282,41 @@ async function renderArticles() {
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1;">${escapeHtml(e.message)}</div>`;
   }
 }
-function renderArticleBody(content, images) {
+// 轻量 Markdown -> HTML (内堂文章为 Markdown)
+function mdToHtml(md) {
+  const esc = (s) => escapeHtml(s);
+  return String(md || '')
+    .split(/\n{2,}/)
+    .map((block) => {
+      const b = block.trim();
+      if (!b) return '';
+      if (/^#{1,3}\s/.test(b)) {
+        const lv = b.match(/^(#{1,3})\s/)[1].length;
+        return `<h${lv}>${esc(b.replace(/^#{1,3}\s/, ''))}</h${lv}>`;
+      }
+      if (/^```/.test(b)) {
+        return `<pre><code>${esc(b.replace(/^```[a-zA-Z]*\n?/, '').replace(/```$/, ''))}</code></pre>`;
+      }
+      if (/^[-*]\s/.test(b)) {
+        return `<ul>${b.split('\n').map((l) => `<li>${esc(l.replace(/^[-*]\s/, ''))}</li>`).join('')}</ul>`;
+      }
+      if (/^\d+\.\s/.test(b)) {
+        return `<ol>${b.split('\n').map((l) => `<li>${esc(l.replace(/^\d+\.\s/, ''))}</li>`).join('')}</ol>`;
+      }
+      if (/^>\s/.test(b)) {
+        return `<blockquote>${esc(b.replace(/^>\s/, ''))}</blockquote>`;
+      }
+      return `<p>${esc(b)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/(^|[^*])\*(?!\*)(.+?)\*(?!\*)/g, '$1<em>$2</em>')
+        .replace(/`([^`]+?)`/g, '<code>$1</code>')
+        .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+        .replace(/\n/g, '<br>')}</p>`;
+    })
+    .join('\n');
+}
+
+function renderArticleBody(content, images, isMarkdown) {
   const imgs = Array.isArray(images) ? images : [];
   let text = String(content || '');
   // inline placement via [img:N]
@@ -295,8 +329,8 @@ function renderArticleBody(content, images) {
     }
     return html;
   }
-  // no markers → escaped text, then a gallery of illustrations below
-  let html = escapeHtml(text);
+  // no markers → text (Markdown 则渲染), then a gallery of illustrations below
+  let html = isMarkdown ? mdToHtml(text) : escapeHtml(text);
   if (imgs.length) html += `<div class="ad-gallery">${imgs.map(u => `<figure><img src="${escapeHtml(u)}" loading="lazy"></figure>`).join('')}</div>`;
   return html;
 }
@@ -321,7 +355,7 @@ async function renderArticleDetail(id) {
           <span>📖 ${article.views || 0} ${escapeHtml(pick('阅读', 'views'))}</span>
           <span>💬 ${comments.length}</span>
         </div>
-        <div class="ad-content">${renderArticleBody(pick(article.content, article.content_en), article.images)}</div>
+        <div class="ad-content">${renderArticleBody(pick(article.content, article.content_en), article.images, true)}</div>
         <div class="like-bar">
           <button class="like-btn ${liked ? 'active' : ''}" id="likeBtn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="${liked ? '#f0795a' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
