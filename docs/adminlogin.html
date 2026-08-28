@@ -134,9 +134,11 @@
     return Promise.all([
       fetchInner('/api/articles?pageSize=5'),
       fetchInner('/api/qso/summary'),
-      fetchInner('/api/qso/onair')
+      fetchInner('/api/qso/stats'),
+      fetchInner('/api/qso/onair'),
+      fetchInner('/api/articles/' + GUESTBOOK_ARTICLE + '/comments')
     ]).then(function (rs) {
-      var j = rs[0], q = rs[1], oa = rs[2];
+      var j = rs[0], qs = rs[1], qst = rs[2], oa = rs[3], g = rs[4];
       var arts = [];
       if (j && j.success) {
         arts = (j.data || []).slice().sort(function (a, b) { return String(b.published_at || '').localeCompare(String(a.published_at || '')); });
@@ -144,12 +146,19 @@
         // 回退静态数据 (内堂不可达时首页仍有文章)
         arts = (D.articles || []).slice().sort(function (a, b) { return String(b.date || '').localeCompare(String(a.date || '')); });
       }
-      var lgs = (q && q.ok && Array.isArray(q.logs)) ? q.logs : [];
+      var lgs = (qs && qs.ok && Array.isArray(qs.logs)) ? qs.logs : [];
+      // 首页统计: 文章数 / 通联数 / 留言数 (内堂优先, 静态兜底)
+      var totalArticles = (j && j.success && j.pagination) ? (j.pagination.total || 0) : (j && j.success ? (j.data || []).length : (D.articles || []).length);
+      var logCount = (qst && qst.stats) ? qst.stats.total : (D.logs || []).length;
+      var messageCount = (g && g.success && Array.isArray(g.data)) ? g.data.length : (D.guestbook || []).length;
       var onAir = (oa && oa.onAirInfo) || D.onAirInfo || null;
       return resp({
         ok: true,
         site: D.site || {},
         onAirInfo: onAir,
+        totalArticles: totalArticles,
+        logCount: logCount,
+        messageCount: messageCount,
         latestArticles: arts.slice(0, 2).map(mapArt),
         latestLogs: lgs
       });
