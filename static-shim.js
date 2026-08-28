@@ -204,6 +204,12 @@
     var ma = u.match(/\/api\/articles\/([^/?#]+)/);
     if (ma) return proxyArticle(decodeURIComponent(ma[1]));
     if (/\/api\/articles$/.test(u)) return proxyArticles();
+    if (/\/api\/qsl$/.test(u)) {
+      return fetchInner('/api/qsl').then(function (j) {
+        if (!j || !j.ok) return resp({ ok: true, qsl: [], stats: { sent: 0, received: 0, total: 0 } });
+        return resp(j);
+      });
+    }
     var cm = u.match(/\/api\.php\?action=comments&article=([^&]+)/);
     if (cm) {
       return fetchInner('/api/articles/' + encodeURIComponent(decodeURIComponent(cm[1])) + '/comments').then(function (j) {

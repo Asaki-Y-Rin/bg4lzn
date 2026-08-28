@@ -347,7 +347,7 @@ table.logs .tdate { color: var(--ink-soft); }
   </footer>
 
   <div class="toast" id="toast"></div>
-  <script>window.__DATA__={"bbsComments":{},"site":{"callsign":"BG4LZN","potaUrl":""},"copy":{},"articles":[{"id":"1","title":"初踏电磁生万趣","date":"2026-08-27","cover":"https://i.ibb.co/20wGnGZR/20260827230811-27-60.jpg","excerpt":"电波传响，趣味初尝","content_md":"知道业余无线电还是在23年。在哔哩哔哩上刷视频时，看见了一个介绍一位HAM上ISS的视频。在对业余无线电的进一步了解之后，我想要考证的心越来越强烈。但在当时，未成年人只能考取操作证而无法设台，我的计划只好搁置了下来。\n24年7月末，我再次刷到有关于业余无线电的视频，正是讲解新规的。看见新规允许未成年人设台时，我那沉寂许久的心再度变得火热。正准备报考时，竟发现最近的考场就在楼下，且时间也很接近。就这样，懵懂的我带着满脑子浆糊去撞了撞运气。结果，以23分的成绩遗憾落榜。\n等啊等，来到了25年，我报考了泰安的考试，终于在4月20日拿到了我的操作证。\n4月30日夜晚，雨。当我在BR4MT中继台上按下PTT，BG4LZN这个呼号第一次被电波那头抄收——窗外的雨声、手台的电流声，连同两年多来所有等待，都在那一声回复中化作了最踏实的归属感。这是我的第一个QSO。","likes":1,"comments":0,"slug":"初踏电磁生众趣"},{"id":"2","title":"留言板","date":"2026-08-27","cover":"","excerpt":"欢迎留言","content_md":"欢迎在留言板留下您的足迹！GL! DE BG4LZN","likes":0,"comments":0,"slug":"guestbook"}],"logs":[],"guestbook":[{"name":"BG4LZN","text":"漂亮！","date":"2026-08-24T01:56:36.224Z"}],"logsInfo":{"lastSync":null},"onAirInfo":null};</script>
+  <script>window.__DATA__={"bbsComments":{},"site":{"callsign":"BG4LZN","potaUrl":""},"copy":{},"articles":[{"id":"1","title":"初踏电磁生万趣","date":"2026-08-27","cover":"https://i.ibb.co/20wGnGZR/20260827230811-27-60.jpg","excerpt":"电波传响，趣味初尝","content_md":"知道业余无线电还是在23年。在哔哩哔哩上刷视频时，看见了一个介绍一位HAM上ISS的视频。在对业余无线电的进一步了解之后，我想要考证的心越来越强烈。但在当时，未成年人只能考取操作证而无法设台，我的计划只好搁置了下来。\n24年7月末，我再次刷到有关于业余无线电的视频，正是讲解新规的。看见新规允许未成年人设台时，我那沉寂许久的心再度变得火热。正准备报考时，竟发现最近的考场就在楼下，且时间也很接近。就这样，懵懂的我带着满脑子浆糊去撞了撞运气。结果，以23分的成绩遗憾落榜。\n等啊等，来到了25年，我报考了泰安的考试，终于在4月20日拿到了我的操作证。\n4月30日夜晚，雨。当我在BR4MT中继台上按下PTT，BG4LZN这个呼号第一次被电波那头抄收——窗外的雨声、手台的电流声，连同两年多来所有等待，都在那一声回复中化作了最踏实的归属感。这是我的第一个QSO。","likes":1,"comments":0,"slug":"初踏电磁生众趣"},{"id":"2","title":"留言板","date":"2026-08-27","cover":"","excerpt":"欢迎留言","content_md":"欢迎在留言板留下您的足迹！GL! DE BG4LZN","likes":1,"comments":0,"slug":"guestbook"}],"logs":[],"guestbook":[{"name":"BG4LZN","text":"漂亮！","date":"2026-08-24T01:56:36.224Z"}],"logsInfo":{"lastSync":null},"onAirInfo":null};</script>
   <script>// ---- static-mode fetch shim: articles proxied to Do-Blog backend (api.bg4lzn.online), rest from embedded data ----
 // BG4LZN 版: 主站(GitHub Pages) 文章动态化 —— 内堂管理、前台展示; 后台模拟只读
 (function () {
@@ -554,6 +554,12 @@ table.logs .tdate { color: var(--ink-soft); }
     var ma = u.match(/\/api\/articles\/([^/?#]+)/);
     if (ma) return proxyArticle(decodeURIComponent(ma[1]));
     if (/\/api\/articles$/.test(u)) return proxyArticles();
+    if (/\/api\/qsl$/.test(u)) {
+      return fetchInner('/api/qsl').then(function (j) {
+        if (!j || !j.ok) return resp({ ok: true, qsl: [], stats: { sent: 0, received: 0, total: 0 } });
+        return resp(j);
+      });
+    }
     var cm = u.match(/\/api\.php\?action=comments&article=([^&]+)/);
     if (cm) {
       return fetchInner('/api/articles/' + encodeURIComponent(decodeURIComponent(cm[1])) + '/comments').then(function (j) {
@@ -591,7 +597,7 @@ table.logs .tdate { color: var(--ink-soft); }
 // ===== 中英互译词库 =====
 window.I18N = {
   zh: {
-    nav: { home: '首页', about: '关于我', articles: '文章', logs: '日志', pota: 'POTA', guestbook: '留言板' },
+    nav: { home: '首页', about: '关于我', articles: '文章', logs: '日志', pota: 'POTA', guestbook: '留言板', qsl: 'QSL 卡片' },
     home: {
       tagline: '山东泰安 · B 类业余无线电操作员',
       sub: '记录我的无线电生活 —— 从天线到电波，从通联日志到远方的 73。',
@@ -607,7 +613,8 @@ window.I18N = {
         guestbook: '留言板', guestbookDesc: '留下你的脚印',
         pota: 'POTA', potaDesc: '空中公园激活统计',
         articles: '文章', articlesDesc: '电台随笔',
-        about: '关于我', aboutDesc: '山东泰安 · B 类'
+        about: '关于我', aboutDesc: '山东泰安 · B 类',
+        qsl: 'QSL 卡片', qslDesc: '卡片收发情况'
       }
     },
     about: {
@@ -665,7 +672,7 @@ window.I18N = {
   },
 
   en: {
-    nav: { home: 'Home', about: 'About', articles: 'Articles', logs: 'Logs', pota: 'POTA', guestbook: 'Guestbook' },
+    nav: { home: 'Home', about: 'About', articles: 'Articles', logs: 'Logs', pota: 'POTA', guestbook: 'Guestbook', qsl: 'QSL Cards' },
     home: {
       tagline: 'Tai\'an, Shandong · Class B Amateur Radio Operator',
       sub: 'My radio life — from antennas to airwaves, from QSO logs to 73s across the world.',
@@ -681,7 +688,8 @@ window.I18N = {
         guestbook: 'Guestbook', guestbookDesc: 'Leave a footprint',
         pota: 'POTA', potaDesc: 'Park activation stats',
         articles: 'Articles', articlesDesc: 'Notes from the shack',
-        about: 'About', aboutDesc: 'Tai\'an · Class B'
+        about: 'About', aboutDesc: 'Tai\'an · Class B',
+        qsl: 'QSL Cards', qslDesc: 'Card sent & received'
       }
     },
     about: {
@@ -817,7 +825,8 @@ function renderNav(active) {
     ['#/articles', t('nav.articles')],
     ['#/logs', t('nav.logs')],
     ['#/pota', t('nav.pota')],
-    ['#/guestbook', t('nav.guestbook')]
+    ['#/guestbook', t('nav.guestbook')],
+    ['#/qsl', t('nav.qsl')]
   ];
   navLinksEl.innerHTML = items.map(([href, label]) =>
     `<a href="${href}" class="nav-link ${active === href ? 'active' : ''}">${escapeHtml(label)}</a>`
@@ -850,7 +859,8 @@ function homeView() {
     { href: '#/guestbook', icon: '📮', t: quick.guestbook, d: quick.guestbookDesc },
     { href: '#/pota', icon: '🏞️', t: quick.pota, d: quick.potaDesc },
     { href: '#/articles', icon: '✍️', t: quick.articles, d: quick.articlesDesc },
-    { href: '#/about', icon: '👋', t: quick.about, d: quick.aboutDesc }
+    { href: '#/about', icon: '👋', t: quick.about, d: quick.aboutDesc },
+    { href: '#/qsl', icon: '🃏', t: quick.qsl, d: quick.qslDesc }
   ];
   return `
   <div class="home-hero">
@@ -1003,6 +1013,46 @@ async function potaView() {
   <div class="pota-frame card">
     <iframe src="${escapeHtml(url)}" height="1250" frameborder="0" scrolling="no" loading="lazy" title="POTA Stats"></iframe>
   </div>`;
+}
+
+function qslView() {
+  return `
+  <div class="page-head">
+    <h2>🃏 ${escapeHtml(pick('QSL 卡片收发情况', 'QSL Cards'))}</h2>
+    <p class="sub">${escapeHtml(pick('与友台交换的 QSL 卡片记录，后台可添加。', 'QSL cards sent & received with fellow hams.'))}</p>
+  </div>
+  <div id="qslStats" style="display:flex;gap:12px;flex-wrap:wrap;margin:18px 0;"></div>
+  <div class="card" style="padding:18px;overflow-x:auto;">
+    <table class="logs" style="width:100%;">
+      <thead><tr><th>${escapeHtml(pick('日期', 'Date'))}</th><th>${escapeHtml(pick('呼号', 'Callsign'))}</th><th>${escapeHtml(pick('波段', 'Band'))}</th><th>${escapeHtml(pick('模式', 'Mode'))}</th><th>${escapeHtml(pick('状态', 'Status'))}</th><th>${escapeHtml(pick('备注', 'Note'))}</th></tr></thead>
+      <tbody id="qslList"><tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(pick('加载中…', 'Loading…'))}</td></tr></tbody>
+    </table>
+  </div>`;
+}
+
+async function renderQsl() {
+  const listEl = qs('#qslList');
+  const statEl = qs('#qslStats');
+  try {
+    const d = await fetchJSON('/api/qsl');
+    const S = { sent: pick('📤 发出', '📤 Sent'), received: pick('📥 收到', '📥 Received'), both: pick('🔁 双方', '🔁 Both') };
+    statEl.innerHTML = [
+      `<span class="band-chip" style="font-size:14px;">🃏 ${escapeHtml(d.stats.total)} ${escapeHtml(pick('条', 'records'))}</span>`,
+      `<span class="band-chip" style="font-size:14px;">📤 ${escapeHtml(d.stats.sent)}</span>`,
+      `<span class="band-chip" style="font-size:14px;">📥 ${escapeHtml(d.stats.received)}</span>`
+    ].join('');
+    listEl.innerHTML = (d.qsl || []).length ? d.qsl.map(q => `
+      <tr>
+        <td>${escapeHtml(q.date || '—')}</td>
+        <td><b>${escapeHtml(q.call)}</b></td>
+        <td>${escapeHtml(q.band || '—')}</td>
+        <td>${escapeHtml(q.mode || '—')}</td>
+        <td><span class="band-chip">${escapeHtml(S[q.status] || q.status || '')}</span></td>
+        <td>${escapeHtml(q.note || '')}</td>
+      </tr>`).join('') : `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(pick('暂无 QSL 记录', 'No QSL records yet'))}</td></tr>`;
+  } catch (e) {
+    listEl.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(e.message)}</td></tr>`;
+  }
 }
 
 function guestbookView() {
@@ -1308,6 +1358,7 @@ async function router() {
     else if (page === 'logs') { app.innerHTML = logsView(); await renderLogs(); }
     else if (page === 'pota') { app.innerHTML = await potaView(); }
     else if (page === 'guestbook') { app.innerHTML = guestbookView(); await renderGuestbook(); }
+    else if (page === 'qsl') { app.innerHTML = qslView(); await renderQsl(); }
     else { app.innerHTML = homeView(); }
   } catch (e) {
     app.innerHTML = `<div class="empty">${escapeHtml(e.message)}</div>`;

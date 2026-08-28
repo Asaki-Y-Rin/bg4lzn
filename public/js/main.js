@@ -59,7 +59,8 @@ function renderNav(active) {
     ['#/articles', t('nav.articles')],
     ['#/logs', t('nav.logs')],
     ['#/pota', t('nav.pota')],
-    ['#/guestbook', t('nav.guestbook')]
+    ['#/guestbook', t('nav.guestbook')],
+    ['#/qsl', t('nav.qsl')]
   ];
   navLinksEl.innerHTML = items.map(([href, label]) =>
     `<a href="${href}" class="nav-link ${active === href ? 'active' : ''}">${escapeHtml(label)}</a>`
@@ -92,7 +93,8 @@ function homeView() {
     { href: '#/guestbook', icon: '📮', t: quick.guestbook, d: quick.guestbookDesc },
     { href: '#/pota', icon: '🏞️', t: quick.pota, d: quick.potaDesc },
     { href: '#/articles', icon: '✍️', t: quick.articles, d: quick.articlesDesc },
-    { href: '#/about', icon: '👋', t: quick.about, d: quick.aboutDesc }
+    { href: '#/about', icon: '👋', t: quick.about, d: quick.aboutDesc },
+    { href: '#/qsl', icon: '🃏', t: quick.qsl, d: quick.qslDesc }
   ];
   return `
   <div class="home-hero">
@@ -245,6 +247,46 @@ async function potaView() {
   <div class="pota-frame card">
     <iframe src="${escapeHtml(url)}" height="1250" frameborder="0" scrolling="no" loading="lazy" title="POTA Stats"></iframe>
   </div>`;
+}
+
+function qslView() {
+  return `
+  <div class="page-head">
+    <h2>🃏 ${escapeHtml(pick('QSL 卡片收发情况', 'QSL Cards'))}</h2>
+    <p class="sub">${escapeHtml(pick('与友台交换的 QSL 卡片记录，后台可添加。', 'QSL cards sent & received with fellow hams.'))}</p>
+  </div>
+  <div id="qslStats" style="display:flex;gap:12px;flex-wrap:wrap;margin:18px 0;"></div>
+  <div class="card" style="padding:18px;overflow-x:auto;">
+    <table class="logs" style="width:100%;">
+      <thead><tr><th>${escapeHtml(pick('日期', 'Date'))}</th><th>${escapeHtml(pick('呼号', 'Callsign'))}</th><th>${escapeHtml(pick('波段', 'Band'))}</th><th>${escapeHtml(pick('模式', 'Mode'))}</th><th>${escapeHtml(pick('状态', 'Status'))}</th><th>${escapeHtml(pick('备注', 'Note'))}</th></tr></thead>
+      <tbody id="qslList"><tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(pick('加载中…', 'Loading…'))}</td></tr></tbody>
+    </table>
+  </div>`;
+}
+
+async function renderQsl() {
+  const listEl = qs('#qslList');
+  const statEl = qs('#qslStats');
+  try {
+    const d = await fetchJSON('/api/qsl');
+    const S = { sent: pick('📤 发出', '📤 Sent'), received: pick('📥 收到', '📥 Received'), both: pick('🔁 双方', '🔁 Both') };
+    statEl.innerHTML = [
+      `<span class="band-chip" style="font-size:14px;">🃏 ${escapeHtml(d.stats.total)} ${escapeHtml(pick('条', 'records'))}</span>`,
+      `<span class="band-chip" style="font-size:14px;">📤 ${escapeHtml(d.stats.sent)}</span>`,
+      `<span class="band-chip" style="font-size:14px;">📥 ${escapeHtml(d.stats.received)}</span>`
+    ].join('');
+    listEl.innerHTML = (d.qsl || []).length ? d.qsl.map(q => `
+      <tr>
+        <td>${escapeHtml(q.date || '—')}</td>
+        <td><b>${escapeHtml(q.call)}</b></td>
+        <td>${escapeHtml(q.band || '—')}</td>
+        <td>${escapeHtml(q.mode || '—')}</td>
+        <td><span class="band-chip">${escapeHtml(S[q.status] || q.status || '')}</span></td>
+        <td>${escapeHtml(q.note || '')}</td>
+      </tr>`).join('') : `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(pick('暂无 QSL 记录', 'No QSL records yet'))}</td></tr>`;
+  } catch (e) {
+    listEl.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(e.message)}</td></tr>`;
+  }
 }
 
 function guestbookView() {
@@ -550,6 +592,7 @@ async function router() {
     else if (page === 'logs') { app.innerHTML = logsView(); await renderLogs(); }
     else if (page === 'pota') { app.innerHTML = await potaView(); }
     else if (page === 'guestbook') { app.innerHTML = guestbookView(); await renderGuestbook(); }
+    else if (page === 'qsl') { app.innerHTML = qslView(); await renderQsl(); }
     else { app.innerHTML = homeView(); }
   } catch (e) {
     app.innerHTML = `<div class="empty">${escapeHtml(e.message)}</div>`;

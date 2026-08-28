@@ -1,7 +1,7 @@
 // ===== 中英互译词库 =====
 window.I18N = {
   zh: {
-    nav: { home: '首页', about: '关于我', articles: '文章', logs: '日志', pota: 'POTA', guestbook: '留言板' },
+    nav: { home: '首页', about: '关于我', articles: '文章', logs: '日志', pota: 'POTA', guestbook: '留言板', qsl: 'QSL 卡片' },
     home: {
       tagline: '山东泰安 · B 类业余无线电操作员',
       sub: '记录我的无线电生活 —— 从天线到电波，从通联日志到远方的 73。',
@@ -17,7 +17,8 @@ window.I18N = {
         guestbook: '留言板', guestbookDesc: '留下你的脚印',
         pota: 'POTA', potaDesc: '空中公园激活统计',
         articles: '文章', articlesDesc: '电台随笔',
-        about: '关于我', aboutDesc: '山东泰安 · B 类'
+        about: '关于我', aboutDesc: '山东泰安 · B 类',
+        qsl: 'QSL 卡片', qslDesc: '卡片收发情况'
       }
     },
     about: {
@@ -75,7 +76,7 @@ window.I18N = {
   },
 
   en: {
-    nav: { home: 'Home', about: 'About', articles: 'Articles', logs: 'Logs', pota: 'POTA', guestbook: 'Guestbook' },
+    nav: { home: 'Home', about: 'About', articles: 'Articles', logs: 'Logs', pota: 'POTA', guestbook: 'Guestbook', qsl: 'QSL Cards' },
     home: {
       tagline: 'Tai\'an, Shandong · Class B Amateur Radio Operator',
       sub: 'My radio life — from antennas to airwaves, from QSO logs to 73s across the world.',
@@ -91,7 +92,8 @@ window.I18N = {
         guestbook: 'Guestbook', guestbookDesc: 'Leave a footprint',
         pota: 'POTA', potaDesc: 'Park activation stats',
         articles: 'Articles', articlesDesc: 'Notes from the shack',
-        about: 'About', aboutDesc: 'Tai\'an · Class B'
+        about: 'About', aboutDesc: 'Tai\'an · Class B',
+        qsl: 'QSL Cards', qslDesc: 'Card sent & received'
       }
     },
     about: {
