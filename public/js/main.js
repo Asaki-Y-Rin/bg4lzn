@@ -146,6 +146,12 @@ function homeView() {
             </div>`).join('') : `<div style="font-size:13px;color:var(--ink-faint);">${escapeHtml(css.recentDemo)}</div>`}
         </div>
       </div>
+      <div class="card" style="margin-top:16px;">
+        <h4><span class="band-chip">☀️</span> ${escapeHtml(pick('传播预测', 'Propagation'))}</h4>
+        <a href="https://www.hamqsl.com/solar.html" target="_blank" rel="noopener" title="点击查看完整太阳数据 (HamQSL)">
+          <img src="https://www.hamqsl.com/solar101vhfper.php" alt="传播预测" style="width:100%;border-radius:8px;display:block;" loading="lazy">
+        </a>
+      </div>
     </div>
   </div>`;
 }
