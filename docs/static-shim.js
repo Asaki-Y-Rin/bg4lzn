@@ -52,6 +52,7 @@
       content_md: a.content_md || '',
       content: a.content_md || a.content || '',
       likes: a.like_count || 0,
+      views: a.read_count || 0,
       comments: 0,
       slug: a.slug || ''
     };
@@ -86,7 +87,14 @@
     });
   }
   function proxyArticle(id) {
-    return fetchInner('/api/articles/' + encodeURIComponent(id)).then(function (j) {
+    var aid = encodeURIComponent(id);
+    // 阅读计数上报 (fire-and-forget, 不阻塞渲染)
+    fetchInnerPost('/api/articles/' + aid + '/read', {}).catch(function () {});
+    return Promise.all([
+      fetchInner('/api/articles/' + aid),
+      fetchInner('/api/articles/' + aid + '/comments')
+    ]).then(function (rs) {
+      var j = rs[0], cj = rs[1];
       if (!j || !j.success) {
         // 回退静态文章
         var fa = (D.articles || []).find(function (x) { return String(x.id) === String(id); });
@@ -98,11 +106,8 @@
         return resp({ ok: false, error: 'not_found' }, 404);
       }
       var art = mapArt(j.data);
-      // 拉取评论数以填充卡片
-      return fetchInner('/api/articles/' + encodeURIComponent(id) + '/comments').then(function (cj) {
-        if (cj && cj.success) art.comments = (cj.data || []).length;
-        return resp({ ok: true, article: art, liked: false });
-      });
+      if (cj && cj.success) art.comments = (cj.data || []).length;
+      return resp({ ok: true, article: art, liked: false });
     });
   }
   function proxyHome() {
