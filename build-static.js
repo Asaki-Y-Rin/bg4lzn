@@ -100,8 +100,8 @@ function staticizeAdmin(srcName) {
   a = a.replace('src="/js/admin.js"', 'src="js/admin.js"');
   a = a.replace('href="/home"', 'href="./index.html#/home"');
   a = a.replace("location.href = '/admin'", "location.href = './admin.html'");
-  // 挂载 static-shim 于 <head>: admin.js 加载即执行 checkAuth, shim 必须先于一切脚本就绪
-  a = a.replace('</head>', '  <script src="static-shim.js"></script>\n</head>');
+  // 挂载 static-shim 于 <head> (内联, 缓存免疫): admin.js 加载即执行 checkAuth, shim 必须先于一切脚本就绪
+  a = a.replace('</head>', '  <script>' + shimCode + '</script>\n</head>');
   return a;
 }
 writeDoc('adminlogin.html', staticizeAdmin('adminlogin.html'));
