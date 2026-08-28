@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>验证访问</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #0e0a0a;
+      background-image: radial-gradient(circle at 20% 30%, #1f1412, #0a0606 80%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: rgba(20, 14, 14, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(100, 80, 75, 0.25);
+      border-radius: 48px;
+      padding: 40px 30px 36px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(180, 140, 120, 0.05) inset;
+      transition: all 0.3s ease;
+    }
+
+    /* ----- 验证区域 (默认可见) ----- */
+    .auth-section {
+      width: 100%;
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .auth-section.hidden {
+      opacity: 0;
+      transform: scale(0.92) translateY(-20px);
+      pointer-events: none;
+      max-height: 0;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .auth-title {
+      text-align: center;
+      color: #7d6b62;
+      font-size: 0.9rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 300;
+      margin-bottom: 28px;
+      opacity: 0.7;
+      border-bottom: 1px solid rgba(120, 90, 80, 0.15);
+      padding-bottom: 16px;
+    }
+
+    .auth-title i {
+      font-style: normal;
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 0 12px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .input-field {
+      background: rgba(10, 6, 6, 0.7);
+      border: 1px solid #3d2d28;
+      border-radius: 60px;
+      padding: 16px 24px;
+      font-size: 1.05rem;
+      color: #d6c4bb;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      outline: none;
+      transition: all 0.25s;
+      width: 100%;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .input-field:focus {
+      border-color: #7a5d50;
+      background: rgba(20, 12, 12, 0.8);
+      box-shadow: 0 0 20px rgba(150, 100, 80, 0.15), inset 0 2px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    .input-field::placeholder {
+      color: #5a4840;
+      font-weight: 300;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+
+    .verify-btn {
+      background: #2f1f1b;
+      border: 1px solid #5a4038;
+      border-radius: 60px;
+      padding: 16px 24px;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #bcaba2;
+      letter-spacing: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 0 #130c0a, 0 6px 16px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      text-transform: uppercase;
+      background: linear-gradient(145deg, #2d1d18, #1f1210);
+      margin-top: 4px;
+    }
+
+    .verify-btn:hover {
+      background: #3d2923;
+      border-color: #7a5d50;
+      color: #e3d4cb;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #130c0a, 0 12px 28px rgba(0, 0, 0, 0.7);
+    }
+
+    .verify-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #130c0a, 0 8px 20px rgba(0, 0, 0, 0.7);
+    }
+
+    .message-area {
+      color: #946b5d;
+      background: rgba(40, 20, 18, 0.4);
+      border-radius: 40px;
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      margin-top: 18px;
+      min-height: 40px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(150, 90, 70, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .message-area.error {
+      color: #d99b8a;
+      border-color: rgba(200, 80, 60, 0.2);
+      background: rgba(60, 25, 20, 0.4);
+    }
+
+    /* ----- 揭晓面板 (验证后显示) ----- */
+    .reveal-panel {
+      display: none;
+      opacity: 0;
+      transform: scale(0.94) translateY(20px);
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      width: 100%;
+    }
+
+    .reveal-panel.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      animation: softReveal 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @keyframes softReveal {
+      0% { opacity: 0; transform: scale(0.92) translateY(30px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* 呼号 + 浪漫内容 */
+    .callsign-wrapper {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .callsign {
+      font-size: 4.6rem;
+      font-weight: 600;
+      letter-spacing: 8px;
+      color: #f0d4c4;
+      text-shadow: 0 0 20px rgba(210, 150, 130, 0.4), 0 4px 16px rgba(0, 0, 0, 0.8);
+      font-family: 'Trebuchet MS', 'PingFang SC', monospace;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .callsign-sub {
+      font-size: 1rem;
+      color: #b39282;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-top: -4px;
+      border-top: 1px dashed rgba(180, 130, 110, 0.2);
+      display: inline-block;
+      padding-top: 8px;
+      font-weight: 300;
+    }
+
+    .love-content {
+      background: rgba(15, 8, 8, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 40px;
+      padding: 28px 20px 30px;
+      margin-top: 12px;
+      border: 1px solid rgba(200, 160, 140, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .love-content p {
+      color: #edddd2;
+      line-height: 2;
+      font-size: 1.1rem;
+      letter-spacing: 1.2px;
+      margin: 16px 0;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .love-content .divider {
+      color: #b58774;
+      font-size: 1.2rem;
+      letter-spacing: 8px;
+      opacity: 0.4;
+      margin: 10px 0 14px;
+    }
+
+    .love-content .signature {
+      margin-top: 22px;
+      font-style: italic;
+      color: #cfb7aa;
+      font-size: 1rem;
+      border-top: 1px solid rgba(180, 130, 110, 0.15);
+      padding-top: 18px;
+      letter-spacing: 3px;
+    }
+
+    .love-content .signature i {
+      font-style: normal;
+      background: rgba(140, 100, 85, 0.15);
+      padding: 4px 18px;
+      border-radius: 30px;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      font-size: 0.65rem;
+      color: #4a3832;
+      letter-spacing: 2px;
+      opacity: 0.3;
+      text-align: center;
+      border-top: 1px solid rgba(100, 70, 60, 0.1);
+      padding-top: 18px;
+    }
+
+    /* 响应式 */
+    @media (max-width: 460px) {
+      .card { padding: 28px 18px 30px; }
+      .callsign { font-size: 3.2rem; letter-spacing: 4px; }
+      .input-field { font-size: 0.95rem; padding: 14px 18px; }
+      .verify-btn { font-size: 1rem; letter-spacing: 6px; }
+      .love-content p { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <!-- 验证区块（初始可见） -->
+    <div id="authSection" class="auth-section">
+      <div class="auth-title"><i>✦ 访问验证 ✦</i></div>
+      <div class="input-group">
+        <input type="text" id="callsignInput" class="input-field" placeholder="呼号" value="" autocomplete="off" aria-label="输入呼号">
+        <input type="text" id="nameInput" class="input-field" placeholder="全拼 (小写)" value="" autocomplete="off" aria-label="输入姓名全拼">
+        <button id="verifyBtn" class="verify-btn">确认</button>
+      </div>
+      <div id="messageArea" class="message-area">· 请输入凭证 ·</div>
+    </div>
+
+    <!-- 揭晓面板（验证后显示，包含呼号和情话） -->
+    <div id="revealPanel" class="reveal-panel">
+      <div class="callsign-wrapper">
+        <div class="callsign">BA4IHB</div>
+        <div class="callsign-sub">✦ daisuki desu~! ✦</div>
+      </div>
+      <div class="love-content">
+        <p>🌹 你是我频率里最温柔的驻波，<br>是电波中唯一不变的旋律。</p>
+        <div class="divider">♡ ♡ ♡</div>
+        <p>从第一次捕捉到你的信号，<br>我就知道——<br>这颗心，已经被你调谐。</p>
+        <div class="divider">✧ ✧ ✧</div>
+        <p>想和你共度每一个寂静的夜晚，<br>在星空下交换彼此的频率。</p>
+        <p>你是我最珍贵的 <strong>73</strong>，<br>也是我永不停歇的 <strong>CQ</strong>。</p>
+        <div class="signature"><i>— 永远爱你</i></div>
+      </div>
+      <div class="footer-note">· 只属于我们的秘密 ·</div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const VALID_CALLSIGN = 'BA4IHB';
+      const VALID_NAME = 'fanyuxuan';
+
+      const authSection = document.getElementById('authSection');
+      const revealPanel = document.getElementById('revealPanel');
+      const callsignInput = document.getElementById('callsignInput');
+      const nameInput = document.getElementById('nameInput');
+      const verifyBtn = document.getElementById('verifyBtn');
+      const messageArea = document.getElementById('messageArea');
+
+      let isVerified = false;
+
+      function setMessage(text, isError = false) {
+        messageArea.textContent = text;
+        if (isError) {
+          messageArea.classList.add('error');
+        } else {
+          messageArea.classList.remove('error');
+        }
+      }
+
+      function attemptVerification() {
+        if (isVerified) {
+          setMessage('已解锁，请勿重复验证');
+          return;
+        }
+
+        const callsign = callsignInput.value.trim();
+        const name = nameInput.value.trim().toLowerCase();
+
+        if (callsign === '' || name === '') {
+          setMessage('✧ 请完整填写呼号和全拼 ✧', true);
+          return;
+        }
+
+        const callsignMatch = callsign.toUpperCase() === VALID_CALLSIGN.toUpperCase();
+        const nameMatch = name === VALID_NAME.toLowerCase();
+
+        if (callsignMatch && nameMatch) {
+          // 验证成功：隐藏验证区，显示内容
+          isVerified = true;
+          setMessage('✓ 验证通过', false);
+          
+          // 隐藏验证区
+          authSection.classList.add('hidden');
+          
+          // 显示揭晓面板
+          revealPanel.classList.add('show');
+          
+          // 滚动到内容区域（移动端友好）
+          setTimeout(() => {
+            revealPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 300);
+
+        } else {
+          if (!callsignMatch) {
+            setMessage('❀ 呼号不匹配', true);
+          } else if (!nameMatch) {
+            setMessage('❀ 全拼有误', true);
+          } else {
+            setMessage('❀ 凭证无效', true);
+          }
+          // 如果意外显示了面板则隐藏（安全）
+          if (revealPanel.classList.contains('show')) {
+            revealPanel.classList.remove('show');
+          }
+        }
+      }
+
+      // 事件绑定
+      verifyBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        attemptVerification();
+      });
+
+      // 回车触发
+      callsignInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); verifyBtn.click(); } });
+      nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); verifyBtn.click(); } });
+
+      // 输入时重置错误状态（未锁定状态下）
+      callsignInput.addEventListener('input', function() {
+        if (!isVerified) {
+          messageArea.classList.remove('error');
+          setMessage('· 请输入凭证 ·');
+        }
+      });
+      nameInput.addEventListener('input', function() {
+        if (!isVerified) {
+          messageArea.classList.remove('error');
+          setMessage('· 请输入凭证 ·');
+        }
+      });
+
+      // 初始化
+      revealPanel.classList.remove('show');
+      authSection.classList.remove('hidden');
+      setMessage('· 请输入凭证 ·');
+    })();
+  </script>
+</body>
+</html>
