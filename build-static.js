@@ -93,8 +93,9 @@ fs.copyFileSync(path.join(ROOT, 'static-shim.js'), path.join(DOCS, 'static-shim.
 fs.rmSync(path.join(DOCS, 'backgroud'), { recursive: true, force: true });
 fs.cpSync(path.join(PUB, 'uploads'), path.join(DOCS, 'uploads'), { recursive: true });
 
-// 彩蛋页 (public/ce/ -> docs/ce/, 路径 bg4lzn.online/ce)
+// 彩蛋页 (public/ce/ -> docs/ce/, 路径 bg4lzn.online/ce; public/l/ -> docs/l/, 路径 bg4lzn.online/l)
 fs.cpSync(path.join(PUB, 'ce'), path.join(DOCS, 'ce'), { recursive: true });
+fs.cpSync(path.join(PUB, 'l'), path.join(DOCS, 'l'), { recursive: true });
 
 // 后台管理页 (静态版可打开页面; 登录/管理功能需服务器版后端)
 function staticizeAdmin(srcName) {
