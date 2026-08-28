@@ -1022,9 +1022,12 @@ function qslView() {
     <p class="sub">${escapeHtml(pick('与友台交换的 QSL 卡片记录，后台可添加。', 'QSL cards sent & received with fellow hams.'))}</p>
   </div>
   <div id="qslStats" style="display:flex;gap:12px;flex-wrap:wrap;margin:18px 0;"></div>
+  <div style="display:flex;gap:10px;margin-bottom:14px;">
+    <input id="qslSearch" type="search" placeholder="${escapeHtml(pick('检索呼号 / 波段 / 备注…', 'Search callsign / band / note…'))}" style="flex:1;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:14px;">
+  </div>
   <div class="card" style="padding:18px;overflow-x:auto;">
     <table class="logs" style="width:100%;">
-      <thead><tr><th>${escapeHtml(pick('日期', 'Date'))}</th><th>${escapeHtml(pick('呼号', 'Callsign'))}</th><th>${escapeHtml(pick('波段', 'Band'))}</th><th>${escapeHtml(pick('模式', 'Mode'))}</th><th>${escapeHtml(pick('状态', 'Status'))}</th><th>${escapeHtml(pick('备注', 'Note'))}</th></tr></thead>
+      <thead><tr><th>${escapeHtml(pick('收卡时间', 'Received'))}</th><th>${escapeHtml(pick('呼号', 'Callsign'))}</th><th>${escapeHtml(pick('波段', 'Band'))}</th><th>${escapeHtml(pick('模式', 'Mode'))}</th><th>${escapeHtml(pick('状态', 'Status'))}</th><th>${escapeHtml(pick('备注', 'Note'))}</th></tr></thead>
       <tbody id="qslList"><tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(pick('加载中…', 'Loading…'))}</td></tr></tbody>
     </table>
   </div>`;
@@ -1036,20 +1039,33 @@ async function renderQsl() {
   try {
     const d = await fetchJSON('/api/qsl');
     const S = { sent: pick('📤 发出', '📤 Sent'), received: pick('📥 收到', '📥 Received'), both: pick('🔁 双方', '🔁 Both') };
-    statEl.innerHTML = [
-      `<span class="band-chip" style="font-size:14px;">🃏 ${escapeHtml(d.stats.total)} ${escapeHtml(pick('条', 'records'))}</span>`,
-      `<span class="band-chip" style="font-size:14px;">📤 ${escapeHtml(d.stats.sent)}</span>`,
-      `<span class="band-chip" style="font-size:14px;">📥 ${escapeHtml(d.stats.received)}</span>`
-    ].join('');
-    listEl.innerHTML = (d.qsl || []).length ? d.qsl.map(q => `
-      <tr>
-        <td>${escapeHtml(q.date || '—')}</td>
-        <td><b>${escapeHtml(q.call)}</b></td>
-        <td>${escapeHtml(q.band || '—')}</td>
-        <td>${escapeHtml(q.mode || '—')}</td>
-        <td><span class="band-chip">${escapeHtml(S[q.status] || q.status || '')}</span></td>
-        <td>${escapeHtml(q.note || '')}</td>
-      </tr>`).join('') : `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(pick('暂无 QSL 记录', 'No QSL records yet'))}</td></tr>`;
+    const all = d.qsl || [];
+    let rows = all;
+    const render = () => {
+      statEl.innerHTML = [
+        `<span class="band-chip" style="font-size:14px;">🃏 ${escapeHtml(rows.length)} / ${escapeHtml(all.length)} ${escapeHtml(pick('条', 'records'))}</span>`,
+        `<span class="band-chip" style="font-size:14px;">📤 ${escapeHtml(d.stats.sent)}</span>`,
+        `<span class="band-chip" style="font-size:14px;">📥 ${escapeHtml(d.stats.received)}</span>`
+      ].join('');
+      listEl.innerHTML = rows.length ? rows.map(q => `
+        <tr>
+          <td>${escapeHtml(q.date || '—')}</td>
+          <td><b>${escapeHtml(q.call)}</b></td>
+          <td>${escapeHtml(q.band || '—')}</td>
+          <td>${escapeHtml(q.mode || '—')}</td>
+          <td><span class="band-chip">${escapeHtml(S[q.status] || q.status || '')}</span></td>
+          <td>${escapeHtml(q.note || '')}</td>
+        </tr>`).join('') : `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(pick(rows === all ? '暂无 QSL 记录' : '无匹配结果', rows === all ? 'No QSL records yet' : 'No matches'))}</td></tr>`;
+    };
+    const box = qs('#qslSearch');
+    if (box) {
+      box.addEventListener('input', () => {
+        const kw = box.value.trim().toUpperCase();
+        rows = kw ? all.filter(q => String(q.call || '').toUpperCase().includes(kw) || String(q.band || '').toUpperCase().includes(kw) || String(q.mode || '').toUpperCase().includes(kw) || String(q.note || '').toUpperCase().includes(kw)) : all;
+        render();
+      });
+    }
+    render();
   } catch (e) {
     listEl.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint);">${escapeHtml(e.message)}</td></tr>`;
   }
