@@ -984,15 +984,17 @@ function aboutView() {
   { name: 'BA4IGG',  url: 'https://ba4igg.cn',                 desc: 'BA4IGG 的博客' },
   { name: 'QRZ', url: 'https://www.qrz.com/db/BG4LZN',     desc: '我的 QRZ 主页' },
   { name: 'QLHAM',   url: 'https://www.qlham.com',             desc: '齐鲁 HAM 网' },
-  { name: 'CRAC',    url: 'https://www.crac.org.cn/',          desc: '中国无线电协会' }
-  { name: 'WATM',    url: 'https://watmham.github.io/watm/',          desc: 'WATM奖项' }
+  { name: 'CRAC',    url: 'https://www.crac.org.cn/',          desc: '中国无线电协会' },
+  { name: 'WATM',    url: 'https://watmham.github.io/watm/',   desc: 'WATM奖项' }
+
 ] : [
-  { name: 'BA4IHB',  url: 'https://ba4ihb.cn',                 desc: 'BA4IHB's Blog' },
-  { name: 'BA4IGG',  url: 'https://ba4igg.cn',                 desc: 'BA4IGG's Blog' },
+  { name: 'BA4IHB',  url: 'https://ba4ihb.cn',                 desc: "BA4IHB's Blog" },
+  { name: 'BA4IGG',  url: 'https://ba4igg.cn',                 desc: "BA4IGG's Blog" },
   { name: 'QRZ.com', url: 'https://www.qrz.com/db/BG4LZN',     desc: 'My QRZ page' },
   { name: 'QLHAM',   url: 'https://www.qlham.com',             desc: 'Qilu HAM Network' },
-  { name: 'CRAC',    url: 'https://www.crac.org.cn/',          desc: 'China Radio Association' }
-  { name: 'WATM',    url: 'https://watmham.github.io/watm/',          desc: 'WATM Award' }
+  { name: 'CRAC',    url: 'https://www.crac.org.cn/',          desc: 'China Radio Association' },
+  { name: 'WATM',    url: 'https://watmham.github.io/watm/',   desc: 'WATM Award' }
+
 ];
   const linkItems = links.map(link => `
     <a class="fl-item" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">
