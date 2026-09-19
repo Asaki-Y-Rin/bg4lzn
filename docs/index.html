@@ -1614,18 +1614,20 @@ function showBubble(text) {
   document.body.appendChild(bubbleEl);
 
   requestAnimationFrame(() => {
-    bubbleEl.style.opacity = '1';
+    if (bubbleEl) bubbleEl.style.opacity = '1';
   });
 
   let left = 20;
   let bottom = 200;
-  let vx = (Math.random() - 0.5) * 2;  // 速度翻倍
-  let vy = (Math.random() - 0.5) * 2;  // 速度翻倍
+  let vx = (Math.random() - 0.5) * 2;
+  let vy = (Math.random() - 0.5) * 2;
 
   let rafId = null;
   const startTime = Date.now();
 
   function drift() {
+    if (!bubbleEl) return;   // 👈 关键
+
     if (left < 0 || left > 200) vx = -vx;
     if (bottom < 120 || bottom > 470) vy = -vy;
 
