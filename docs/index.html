@@ -1588,7 +1588,7 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     let bubbleEl = null;
 
     // 显示气泡
- function showBubble(text) {
+function showBubble(text) {
   if (bubbleEl) bubbleEl.remove();
   bubbleEl = document.createElement('div');
   bubbleEl.id = 'live2d-bubble';
@@ -1608,13 +1608,19 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     max-width: 240px;
     line-height: 1.5;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity .5s ease;
   `;
   document.body.appendChild(bubbleEl);
 
-  // 当前位置
+  // 下一帧立刻淡入
+  requestAnimationFrame(() => {
+    bubbleEl.style.opacity = '1';
+  });
+
+  // 飘动
   let left = 20;
   let bottom = 200;
-  // 飘动速度（每帧移动的像素）
   let vx = (Math.random() - 0.5) * 0.8;
   let vy = (Math.random() - 0.5) * 0.8;
 
@@ -1622,7 +1628,6 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
   const startTime = Date.now();
 
   function drift() {
-    // 到达边界反弹
     if (left < 0 || left > 200) vx = -vx;
     if (bottom < 120 || bottom > 470) vy = -vy;
 
@@ -1632,7 +1637,6 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     bubbleEl.style.left = left + 'px';
     bubbleEl.style.bottom = bottom + 'px';
 
-    // 8 秒后停止
     if (Date.now() - startTime < 8000) {
       rafId = requestAnimationFrame(drift);
     }
@@ -1640,12 +1644,17 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
   rafId = requestAnimationFrame(drift);
 
-  // 8 秒后消失
+  // 8 秒后淡出并移除
   clearTimeout(bubbleEl._t);
   bubbleEl._t = setTimeout(() => {
     cancelAnimationFrame(rafId);
-    if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
-  }, 8000);
+    if (bubbleEl) {
+      bubbleEl.style.opacity = '0';
+      setTimeout(() => {
+        if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
+      }, 500);
+    }
+  }, 5000);
 }
     async function loadModel(index) {
       if (currentModel) {
