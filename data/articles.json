@@ -1,12 +1,23 @@
 [
   {
+    "id": "6",
+    "title": "用一台旧笔记本搭一个 HamClock 社区后端节点",
+    "date": "2026-09-19",
+    "cover": "https://i.ibb.co/PG8RbwfV/Hamclock-Screenshot-scaled.png",
+    "excerpt": "用一台旧笔记本搭一个 HamClock 社区后端节点 纪念 Elwood Downey（WB0OEW） 背景 Elwood Downey（WB0OEW）于 2026 年 1 月去世，他开发的 HamClock 是很多火腿 shack 里的标配工具。官方后端服务器计划于 2026 年 6 月关闭，社区正在接力维护替代节点。 我手头有一台闲置的笔记本，决定用它搭一个 Open HamClock...",
+    "content_md": "# 用一台旧笔记本搭一个 HamClock 社区后端节点\n\n> 纪念 Elwood Downey（WB0OEW）\n\n## 背景\n\nElwood Downey（WB0OEW）于 2026 年 1 月去世，他开发的 HamClock 是很多火腿 shack 里的标配工具。官方后端服务器计划于 2026 年 6 月关闭，社区正在接力维护替代节点。\n\n我手头有一台闲置的笔记本，决定用它搭一个 Open HamClock Backend（OHB）节点，作为社区后端之一，域名定为 `oew.bg4lzn.online`，纪念 WB0OEW。\n\n## 域名\n\n- **域名**：`bg4lzn.online`，DNS 托管在 Cloudflare\n- **子域名**：`oew.bg4lzn.online`\n\n## 网络结构\n\n光猫（拨号 + NAT）\n  └── 交换机（二级路由 + NAT）\n        └── 分路由（三级路由 + NAT）\n              └── 笔记本（OHB 服务）\n```\n\n笔记本处于三层 NAT 之后，外网无法直接访问。因此使用 **Cloudflare Tunnel**。\n\n## 部署步骤\n\n### 1. 安装 Docker Desktop\n\n在 Windows 10 上安装 Docker Desktop，用于运行 OHB 和 cloudflared。\n\n### 2. 运行 OHB\n\n\n```\npowershell\ndocker run -d --name ohb --restart always -p 3000:3000 open-hamclock-backend\n```\n\n\n（具体镜像名以社区发布为准）\n\n### 3. 配置 Cloudflare Tunnel\n\n在 Cloudflare 后台创建 Tunnel，获取 Token，然后在笔记本上运行：\n\n```powershell\ndocker run -d --name cf-tunnel --restart always cloudflare/cloudflared:latest tunnel --no-autoupdate run --token 你的TOKEN\n```\n\n在 Tunnel 的 Public Hostname 中添加：\n\n- **Subdomain**：`oew`\n- **Domain**：`bg4lzn.online`\n- **Service**：`HTTP`\n- **URL**：`localhost:3000`\n\n### 4. 验证\n\n访问 `https://oew.bg4lzn.online/ham/HamClock/worldwx/wx.txt`，返回全球气象数据，格式正确，说明服务已经跑通。\n\n## 实测数据\n\n| 地区 | 延迟 |\n|---|---|\n| 中国台湾地区  |  <1ms |\n| 中国大陆地区  |  100~300ms |\n\n延迟主要来自 Cloudflare 海外节点回源，对 HamClock 定时拉取数据的服务影响不大。\n\n## 后续计划\n\n- 观察稳定性，确保笔记本不休眠、Tunnel 不断线\n- 测试其他关键接口（version.pl、dxspots.txt 等）\n- 在业余无线电社区低调分享，让有需要的人知道这个节点\n\n## 意义\n\nElwood 离开了，但他的 HamClock 还在很多火腿的 shack 里亮着。这个节点是社区接力的一部分，也是我对 WB0OEW 的一份纪念。\n\n73 de BG4LZN\n```\n",
+    "likes": 0,
+    "comments": 0,
+    "slug": "OHB"
+  },
+  {
     "id": "5",
     "title": "关于最近时间BG4LZN开始发信的公告",
     "date": "2026-09-19",
-    "cover": "https://ibb.co/XxKhyrLx",
+    "cover": "https://i.ibb.co/8gfWzLsg/IMG-20260830-172132.jpg",
     "excerpt": "BG4LZN最近时间恢复发报 目前距离中国大陆法定节假日时间相近，并且节假日时长较长，遂恢复发报。 BG4LZN预计上线时间： BJT 2026.9.20 15:0018:00 之间； BJT 2026.9.232026.9.24 6:3019:00 之间； BJT 2026.9.259.27 中秋节假期期间； BJT 2026.10.110.7 国庆节假期期间。...",
     "content_md": "# BG4LZN最近时间恢复发报\n## 目前距离中国大陆法定节假日时间相近，并且节假日时长较长，遂恢复发报。\n### BG4LZN预计上线时间：\nBJT 2026.9.20 15:00~18:00 之间；\nBJT 2026.9.23~2026.9.24 6:30~19:00 之间；\nBJT 2026.9.25~9.27 中秋节假期期间；\nBJT 2026.10.1~10.7 国庆节假期期间。\n\n### 上述时段BG4LZN将恢复发报。\n\n\n\n9.20~9.24上线时间内，将预计使用14MHz、21MHz、BR4IAA中继台之波段、频率，使用包括莫尔斯电报、单边带话音、调频话音的模式；\n\n9.25~10.7上线时间内，将预计使用7MHz、14MHz、18MHz、21MHz、28MHz、BR4IAA、济宁运河之都中继台等波段、频率，使用包括莫尔斯电报、单边带话音、FT8数据、SSTV慢扫描电视、调频话音等模式。\n\n---\n希望能在上述时间与各位友台空中相见，73！\n",
-    "likes": 0,
+    "likes": 1,
     "comments": 0,
     "slug": "260920"
   },
