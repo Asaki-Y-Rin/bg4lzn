@@ -1536,7 +1536,6 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
-
 <script src="https://fastly.jsdelivr.net/npm/pixi.js@6.5.2/dist/browser/pixi.min.js"></script>
 <script src="https://fastly.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism2.min.js"></script>
 
@@ -1549,6 +1548,7 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
       resizeTo: window
     });
     document.body.appendChild(app.view);
+    // 画布不挡鼠标，页面其他内容正常交互
     app.view.style.cssText = 'position:fixed;bottom:0;left:0;z-index:999;pointer-events:none;';
 
     const modelPaths = [
@@ -1571,7 +1571,7 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
         const path = modelPaths[index];
         currentModel = await PIXI.live2d.Live2DModel.from(path);
         app.stage.addChild(currentModel);
-        currentModel.scale.set(0.25);
+        currentModel.scale.set(0.3);   // 调大小，按需改
         currentModel.position.set(0, window.innerHeight);
         currentModel.anchor.set(0, 1);
       } catch (e) {
@@ -1581,7 +1581,27 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
     loadModel(0);
 
-    app.view.addEventListener('click', () => {
+    // ---- 加一个独立切换按钮 ----
+    const btn = document.createElement('button');
+    btn.textContent = '切换看板娘';
+    btn.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 10px 18px;
+      border-radius: 100px;
+      border: none;
+      background: #f0795a;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(160,130,100,.2);
+    `;
+    document.body.appendChild(btn);
+
+    btn.addEventListener('click', () => {
       currentIndex = (currentIndex + 1) % modelPaths.length;
       loadModel(currentIndex);
     });
