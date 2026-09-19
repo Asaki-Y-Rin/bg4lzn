@@ -1550,7 +1550,6 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
       resizeTo: window
     });
     document.body.appendChild(app.view);
-    // 画布不挡鼠标，页面其他内容正常交互
     app.view.style.cssText = 'position:fixed;bottom:0;left:0;z-index:999;pointer-events:none;';
 
     const modelPaths = [
@@ -1573,21 +1572,9 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
         const path = modelPaths[index];
         currentModel = await PIXI.live2d.Live2DModel.from(path);
         app.stage.addChild(currentModel);
-        currentModel.scale.set(0.3);   // 调大小，按需改
+        currentModel.scale.set(0.3);
         currentModel.position.set(0, window.innerHeight);
         currentModel.anchor.set(0, 1);
-
-        // ---- 点击互动 ----
-        // 监听命中事件，点击模型不同区域播放对应动作
-        currentModel.on('hit', () => {
-  const groups = currentModel.internalModel.motionManager.definitions;
-  const keys = Object.keys(groups);
-  if (keys.length > 0) {
-    const group = keys[Math.floor(Math.random() * keys.length)];
-    currentModel.motion(group);
-  }
-});
-        // 👆 注意：动作名称（'tap_body'、'tap_head'）需要根据模型实际定义来改
       } catch (e) {
         console.error('模型加载失败:', modelPaths[index], e);
       }
@@ -1595,24 +1582,23 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
     loadModel(0);
 
-    // ---- 切换按钮 ----
+    // 点击非交互元素时触发看板娘动作
+    document.addEventListener('click', (e) => {
+      const interactive = e.target.closest('a, button, input, textarea, select, [contenteditable], .nav-link, .btn');
+      if (interactive) return;
+      if (!currentModel) return;
+      const groups = currentModel.internalModel.motionManager.definitions;
+      const keys = Object.keys(groups);
+      if (keys.length > 0) {
+        const group = keys[Math.floor(Math.random() * keys.length)];
+        currentModel.motion(group);
+      }
+    });
+
+    // 切换按钮
     const btn = document.createElement('button');
     btn.textContent = '切换';
-    btn.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      padding: 10px 18px;
-      border-radius: 100px;
-      border: none;
-      background: #f0795a;
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(160,130,100,.2);
-    `;
+    btn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:1000;padding:10px 18px;border-radius:100px;border:none;background:#f0795a;color:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(160,130,100,.2);';
     document.body.appendChild(btn);
 
     btn.addEventListener('click', () => {
