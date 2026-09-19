@@ -1613,16 +1613,14 @@ function showBubble(text) {
   `;
   document.body.appendChild(bubbleEl);
 
-  // 下一帧立刻淡入
   requestAnimationFrame(() => {
     bubbleEl.style.opacity = '1';
   });
 
-  // 飘动
   let left = 20;
   let bottom = 200;
-  let vx = (Math.random() - 0.5) * 0.8;
-  let vy = (Math.random() - 0.5) * 0.8;
+  let vx = (Math.random() - 0.5) * 1.6;  // 速度翻倍
+  let vy = (Math.random() - 0.5) * 1.6;  // 速度翻倍
 
   let rafId = null;
   const startTime = Date.now();
@@ -1644,7 +1642,6 @@ function showBubble(text) {
 
   rafId = requestAnimationFrame(drift);
 
-  // 8 秒后淡出并移除
   clearTimeout(bubbleEl._t);
   bubbleEl._t = setTimeout(() => {
     cancelAnimationFrame(rafId);
