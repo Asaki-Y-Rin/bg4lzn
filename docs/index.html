@@ -1583,17 +1583,21 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     loadModel(0);
 
     // 点击非交互元素时触发看板娘动作
-    document.addEventListener('click', (e) => {
-      const interactive = e.target.closest('a, button, input, textarea, select, [contenteditable], .nav-link, .btn');
-      if (interactive) return;
-      if (!currentModel) return;
-      const groups = currentModel.internalModel.motionManager.definitions;
-      const keys = Object.keys(groups);
-      if (keys.length > 0) {
-        const group = keys[Math.floor(Math.random() * keys.length)];
-        currentModel.motion(group);
-      }
-    });
+document.addEventListener('click', (e) => {
+  const interactive = e.target.closest('a, button, input, textarea, select, [contenteditable], .nav-link, .btn');
+  if (interactive) return;
+  if (!currentModel) return;
+
+  const groups = currentModel.internalModel.motionManager.definitions;
+  const keys = Object.keys(groups);
+  console.log('动作组:', keys);   // 👈 加这行
+
+  if (keys.length > 0) {
+    const group = keys[Math.floor(Math.random() * keys.length)];
+    console.log('播放:', group);  // 👈 加这行
+    currentModel.motion(group);
+  }
+});
 
     // 切换按钮
     const btn = document.createElement('button');
