@@ -1551,24 +1551,40 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     document.body.appendChild(app.view);
     app.view.style.cssText = 'position:fixed;bottom:0;left:0;z-index:999;pointer-events:none;';
 
-    const models = [
+    const modelPaths = [
       './mikoto/mikoto.model.json',
       './kuroko/kuroko.model.json',
       './33_high/model.json',
       './22_high/model.json'
     ];
 
-    for (const path of models) {
+    let currentIndex = 0;
+    let currentModel = null;
+
+    async function loadModel(index) {
+      if (currentModel) {
+        app.stage.removeChild(currentModel);
+        currentModel.destroy();
+        currentModel = null;
+      }
       try {
-        const model = await PIXI.live2d.Live2DModel.from(path);
-        app.stage.addChild(model);
-        model.scale.set(3);
-        model.position.set(0, window.innerHeight);
-        model.anchor.set(0, 1);
+        const path = modelPaths[index];
+        currentModel = await PIXI.live2d.Live2DModel.from(path);
+        app.stage.addChild(currentModel);
+        currentModel.scale.set(3);
+        currentModel.position.set(0, window.innerHeight);
+        currentModel.anchor.set(0, 1);
       } catch (e) {
-        console.error('模型加载失败:', path, e);
+        console.error('模型加载失败:', modelPaths[index], e);
       }
     }
+
+    loadModel(0);
+
+    app.view.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % modelPaths.length;
+      loadModel(currentIndex);
+    });
   })();
 </script>
 </body>
