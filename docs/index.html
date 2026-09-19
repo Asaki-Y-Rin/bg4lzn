@@ -1588,22 +1588,15 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     let bubbleEl = null;
 
     // 显示气泡
-    function showBubble(text) {
+  function showBubble(text) {
   if (bubbleEl) bubbleEl.remove();
   bubbleEl = document.createElement('div');
   bubbleEl.id = 'live2d-bubble';
   bubbleEl.textContent = text;
-
-  // 随机位置：在左下角区域内
-  const maxLeft = 200;   // 水平随机范围（px）
-  const maxBottom = 350; // 垂直随机范围（px）
-  const left = Math.random() * maxLeft;
-  const bottom = 120 + Math.random() * maxBottom;
-
   bubbleEl.style.cssText = `
     position: fixed;
-    left: ${left}px;
-    bottom: ${bottom}px;
+    left: 20px;
+    bottom: 200px;
     z-index: 1001;
     background: #fff;
     color: #3a3530;
@@ -1614,14 +1607,29 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     font-weight: 600;
     max-width: 240px;
     line-height: 1.5;
+    transition: left 4s ease-in-out, bottom 4s ease-in-out;
   `;
   document.body.appendChild(bubbleEl);
+
+  // 起始位置
+  let left = 20;
+  let bottom = 200;
+
+  // 飘动：每 4 秒随机换一个新位置
+  const drift = setInterval(() => {
+    left = Math.random() * 200;          // 0 ~ 200px
+    bottom = 120 + Math.random() * 350;  // 120 ~ 470px
+    bubbleEl.style.left = left + 'px';
+    bubbleEl.style.bottom = bottom + 'px';
+  }, 4000);
+
+  // 停留更久：8 秒后消失
   clearTimeout(bubbleEl._t);
   bubbleEl._t = setTimeout(() => {
+    clearInterval(drift);
     if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
-  }, 3000);
+  }, 8000);
 }
-
     async function loadModel(index) {
       if (currentModel) {
         app.stage.removeChild(currentModel);
