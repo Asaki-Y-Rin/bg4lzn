@@ -1534,5 +1534,16 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
   window.addEventListener('resize', resize);
 })();
 </script>
+  <!-- Live2D 看板娘 -->
+<script src="https://fastly.jsdelivr.net/npm/wl-live2d/dist/es/index.js" type="module"></script>
+<script type="module">
+  wlLive2d({
+    models: [
+      {
+        path: './kuroko/kuroko.model.json'
+      }
+    ]
+  });
+</script>
 </body>
 </html>
