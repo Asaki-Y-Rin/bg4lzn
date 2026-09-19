@@ -1588,7 +1588,7 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     let bubbleEl = null;
 
     // 显示气泡
-  function showBubble(text) {
+ function showBubble(text) {
   if (bubbleEl) bubbleEl.remove();
   bubbleEl = document.createElement('div');
   bubbleEl.id = 'live2d-bubble';
@@ -1607,26 +1607,43 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     font-weight: 600;
     max-width: 240px;
     line-height: 1.5;
-    transition: left 4s ease-in-out, bottom 4s ease-in-out;
+    pointer-events: none;
   `;
   document.body.appendChild(bubbleEl);
 
-  // 起始位置
+  // 当前位置
   let left = 20;
   let bottom = 200;
+  // 飘动速度（每帧移动的像素）
+  let vx = (Math.random() - 0.5) * 0.8;
+  let vy = (Math.random() - 0.5) * 0.8;
 
-  // 飘动：每 4 秒随机换一个新位置
-  const drift = setInterval(() => {
-    left = Math.random() * 200;          // 0 ~ 200px
-    bottom = 120 + Math.random() * 350;  // 120 ~ 470px
+  let rafId = null;
+  const startTime = Date.now();
+
+  function drift() {
+    // 到达边界反弹
+    if (left < 0 || left > 200) vx = -vx;
+    if (bottom < 120 || bottom > 470) vy = -vy;
+
+    left += vx;
+    bottom += vy;
+
     bubbleEl.style.left = left + 'px';
     bubbleEl.style.bottom = bottom + 'px';
-  }, 4000);
 
-  // 停留更久：8 秒后消失
+    // 8 秒后停止
+    if (Date.now() - startTime < 8000) {
+      rafId = requestAnimationFrame(drift);
+    }
+  }
+
+  rafId = requestAnimationFrame(drift);
+
+  // 8 秒后消失
   clearTimeout(bubbleEl._t);
   bubbleEl._t = setTimeout(() => {
-    clearInterval(drift);
+    cancelAnimationFrame(rafId);
     if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
   }, 8000);
 }
