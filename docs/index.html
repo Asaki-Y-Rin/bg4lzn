@@ -1571,7 +1571,7 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
         const path = modelPaths[index];
         currentModel = await PIXI.live2d.Live2DModel.from(path);
         app.stage.addChild(currentModel);
-        currentModel.scale.set(3);
+        currentModel.scale.set(0.25);
         currentModel.position.set(0, window.innerHeight);
         currentModel.anchor.set(0, 1);
       } catch (e) {
