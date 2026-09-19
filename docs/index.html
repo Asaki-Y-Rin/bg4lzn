@@ -1560,28 +1560,28 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     ];
 
     // 预设台词
-   const dialogues = [
-  '你好呀！',
-  '今天也要加油哦！',
-  '不要老是摸人家啦！',
-  '记得多喝水哦～',
-  '73！DE BG4LZN',
-  '欢迎来到电波小窝！',
-  '点击切换可以换人哦～',
-  '别再摸啦，我有喜欢的人了！',
-  'え？',
-  'は？',
-  '何してるの？',
-  'ストップだよ！',
-  '本当に？',
-  'stooooop!',
-  'I have lover,do not touch me!',
-  'what?',
-  'hi?',
-  'drink water,NOWWWWW!!!!!',
-  'welcome',
-  'so itchy'
-];
+    const dialogues = [
+      '你好呀！',
+      '今天也要加油哦！',
+      '不要老是摸人家啦！',
+      '记得多喝水哦～',
+      '73！DE BG4LZN',
+      '欢迎来到电波小窝！',
+      '点击切换可以换人哦～',
+      '别再摸啦，我有喜欢的人了！',
+      'え？',
+      'は？',
+      '何してるの？',
+      'ストップだよ！',
+      '本当に？',
+      'stooooop!',
+      "I have a lover, don't touch me!",
+      'what?',
+      'hi?',
+      'drink water,NOWWWWW!!!!!',
+      'welcome',
+      'so itchy'
+    ];
 
     let currentIndex = 0;
     let currentModel = null;
@@ -1591,11 +1591,12 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     function showBubble(text) {
       if (bubbleEl) bubbleEl.remove();
       bubbleEl = document.createElement('div');
+      bubbleEl.id = 'live2d-bubble';
       bubbleEl.textContent = text;
       bubbleEl.style.cssText = `
         position: fixed;
-        bottom: 320px;
-        left: 40px;
+        bottom: 200px;
+        left: 20px;
         z-index: 1001;
         background: #fff;
         color: #3a3530;
@@ -1634,10 +1635,15 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
     loadModel(0);
 
-    // 点击非交互元素时触发动作 + 气泡
+    // 只在左下角区域点击时触发
     document.addEventListener('click', (e) => {
-      const interactive = e.target.closest('a, button, input, textarea, select, [contenteditable], .nav-link, .btn');
-      if (interactive) return;
+      const zoneWidth = 300;    // 区域宽度
+      const zoneHeight = 400;   // 区域高度
+      const inZone = e.clientX < zoneWidth && e.clientY > window.innerHeight - zoneHeight;
+      if (!inZone) return;
+
+      if (e.target.closest('a, button, input, textarea, select, [contenteditable], .nav-link, .btn')) return;
+      if (e.target.id === 'live2d-bubble') return;
       if (!currentModel) return;
 
       const groups = currentModel.internalModel.motionManager.definitions;
