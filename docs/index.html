@@ -348,6 +348,11 @@ table.logs .tdate { color: var(--ink-soft); }
   font-size: 12px;
   color: var(--ink-soft);
 }
+  /* 缩放 Live2D 看板娘 */
+canvas {
+  transform: scale(4);        /* 先试 1.5，不合适再调 */
+  transform-origin: bottom left; /* 让缩放以左下角为原点，不会跑出屏幕 */
+}
 </style>
   <script>if (!location.hash) location.replace('welcome.html');</script>
 </head>
@@ -1543,6 +1548,12 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
       },
       {
         path: './kuroko/kuroko.model.json'
+      }
+      {
+        path: './22_high/model.json'
+      }
+      {
+        path: './33_high/model.json'
       }
     ]
   });
