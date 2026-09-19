@@ -1535,6 +1535,8 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
   window.addEventListener('resize', resize);
 })();
 </script>
+
+  
 <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
 <script src="https://fastly.jsdelivr.net/npm/pixi.js@6.5.2/dist/browser/pixi.min.js"></script>
 <script src="https://fastly.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism2.min.js"></script>
@@ -1574,6 +1576,17 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
         currentModel.scale.set(0.3);   // 调大小，按需改
         currentModel.position.set(0, window.innerHeight);
         currentModel.anchor.set(0, 1);
+
+        // ---- 点击互动 ----
+        // 监听命中事件，点击模型不同区域播放对应动作
+        currentModel.on('hit', (hitAreas) => {
+          if (hitAreas.includes('body')) {
+            currentModel.motion('tap_body');
+          } else if (hitAreas.includes('head')) {
+            currentModel.motion('tap_head');
+          }
+        });
+        // 👆 注意：动作名称（'tap_body'、'tap_head'）需要根据模型实际定义来改
       } catch (e) {
         console.error('模型加载失败:', modelPaths[index], e);
       }
@@ -1581,7 +1594,7 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
     loadModel(0);
 
-    // ---- 加一个独立切换按钮 ----
+    // ---- 切换按钮 ----
     const btn = document.createElement('button');
     btn.textContent = '切换';
     btn.style.cssText = `
