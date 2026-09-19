@@ -348,11 +348,7 @@ table.logs .tdate { color: var(--ink-soft); }
   font-size: 12px;
   color: var(--ink-soft);
 }
-  /* 缩放 Live2D 看板娘 */
-canvas {
-  transform: scale(4);        /* 先试 1.5，不合适再调 */
-  transform-origin: bottom left; /* 让缩放以左下角为原点，不会跑出屏幕 */
-}
+ 
 </style>
   <script>if (!location.hash) location.replace('welcome.html');</script>
 </head>
@@ -1539,24 +1535,39 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
   window.addEventListener('resize', resize);
 })();
 </script>
- <script src="https://fastly.jsdelivr.net/npm/wl-live2d/dist/es/index.js" type="module"></script>
-<script type="module">
-  wlLive2d({
-    models: [
-      {
-        path: './mikoto/mikoto.model.json'
-      },
-      {
-        path: './kuroko/kuroko.model.json'
+ <script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.2/dist/browser/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
+<script>
+  (async () => {
+    const app = new PIXI.Application({
+      view: document.createElement('canvas'),
+      transparent: true,
+      autoStart: true,
+      resizeTo: window
+    });
+    document.body.appendChild(app.view);
+    app.view.style.cssText = 'position:fixed;bottom:0;left:0;z-index:999;pointer-events:none;';
+
+    const models = [
+      './mikoto/mikoto.model.json',
+      './kuroko/kuroko.model.json'
+      './33_high/model.json'
+      './22_high/model.json'
+    ];
+
+    for (const path of models) {
+      try {
+        const model = await PIXI.live2d.Live2DModel.from(path);
+        app.stage.addChild(model);
+        model.scale.set(3);          // 调大小
+        model.position.set(0, window.innerHeight); // 贴左下角
+        model.anchor.set(0, 1);
+      } catch (e) {
+        console.error('模型加载失败:', path, e);
       }
-      {
-        path: './22_high/model.json'
-      }
-      {
-        path: './33_high/model.json'
-      }
-    ]
-  });
+    }
+  })();
 </script>
 </body>
 </html>
