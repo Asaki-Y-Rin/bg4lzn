@@ -1589,31 +1589,38 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
     // 显示气泡
     function showBubble(text) {
-      if (bubbleEl) bubbleEl.remove();
-      bubbleEl = document.createElement('div');
-      bubbleEl.id = 'live2d-bubble';
-      bubbleEl.textContent = text;
-      bubbleEl.style.cssText = `
-        position: fixed;
-        bottom: 200px;
-        left: 20px;
-        z-index: 1001;
-        background: #fff;
-        color: #3a3530;
-        padding: 12px 18px;
-        border-radius: 16px;
-        box-shadow: 0 4px 16px rgba(160,130,100,.2);
-        font-size: 14px;
-        font-weight: 600;
-        max-width: 240px;
-        line-height: 1.5;
-      `;
-      document.body.appendChild(bubbleEl);
-      clearTimeout(bubbleEl._t);
-      bubbleEl._t = setTimeout(() => {
-        if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
-      }, 3000);
-    }
+  if (bubbleEl) bubbleEl.remove();
+  bubbleEl = document.createElement('div');
+  bubbleEl.id = 'live2d-bubble';
+  bubbleEl.textContent = text;
+
+  // 随机位置：在左下角区域内
+  const maxLeft = 200;   // 水平随机范围（px）
+  const maxBottom = 350; // 垂直随机范围（px）
+  const left = Math.random() * maxLeft;
+  const bottom = 120 + Math.random() * maxBottom;
+
+  bubbleEl.style.cssText = `
+    position: fixed;
+    left: ${left}px;
+    bottom: ${bottom}px;
+    z-index: 1001;
+    background: #fff;
+    color: #3a3530;
+    padding: 12px 18px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(160,130,100,.2);
+    font-size: 14px;
+    font-weight: 600;
+    max-width: 240px;
+    line-height: 1.5;
+  `;
+  document.body.appendChild(bubbleEl);
+  clearTimeout(bubbleEl._t);
+  bubbleEl._t = setTimeout(() => {
+    if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
+  }, 3000);
+}
 
     async function loadModel(index) {
       if (currentModel) {
