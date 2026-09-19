@@ -1619,8 +1619,8 @@ function showBubble(text) {
 
   let left = 20;
   let bottom = 200;
-  let vx = (Math.random() - 0.5) * 1.6;  // 速度翻倍
-  let vy = (Math.random() - 0.5) * 1.6;  // 速度翻倍
+  let vx = (Math.random() - 0.5) * 2;  // 速度翻倍
+  let vy = (Math.random() - 0.5) * 2;  // 速度翻倍
 
   let rafId = null;
   const startTime = Date.now();
@@ -1651,7 +1651,7 @@ function showBubble(text) {
         if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
       }, 500);
     }
-  }, 5000);
+  }, 2500);
 }
     async function loadModel(index) {
       if (currentModel) {
