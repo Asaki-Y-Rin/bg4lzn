@@ -1579,13 +1579,14 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
         // ---- 点击互动 ----
         // 监听命中事件，点击模型不同区域播放对应动作
-        currentModel.on('hit', (hitAreas) => {
-          if (hitAreas.includes('body')) {
-            currentModel.motion('tap_body');
-          } else if (hitAreas.includes('head')) {
-            currentModel.motion('tap_head');
-          }
-        });
+        currentModel.on('hit', () => {
+  const groups = currentModel.internalModel.motionManager.definitions;
+  const keys = Object.keys(groups);
+  if (keys.length > 0) {
+    const group = keys[Math.floor(Math.random() * keys.length)];
+    currentModel.motion(group);
+  }
+});
         // 👆 注意：动作名称（'tap_body'、'tap_head'）需要根据模型实际定义来改
       } catch (e) {
         console.error('模型加载失败:', modelPaths[index], e);
