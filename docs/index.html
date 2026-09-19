@@ -1535,14 +1535,15 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
   window.addEventListener('resize', resize);
 })();
 </script>
-<!-- Cubism 运行时 (必须先加载) -->
-<script src="https://fastly.jsdelivr.net/npm/live2d-widget@3.1.4/lib/live2d.min.js"></script>
-<script src="https://fastly.jsdelivr.net/npm/live2dcubismcore@1.0.2/live2dcubismcore.min.js"></script>
+<!-- Cubism 2 运行时 -->
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2d.min.js"></script>
+<!-- Cubism 4/5 运行时 -->
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
 
-<!-- Pixi + Live2D 插件 -->
+<!-- Pixi -->
 <script src="https://fastly.jsdelivr.net/npm/pixi.js@6.5.2/dist/browser/pixi.min.js"></script>
-<script src="https://fastly.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism2.min.js"></script>
-<script src="https://fastly.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
+<!-- pixi-live2d-display 完整版（含 cubism2 + cubism4 插件） -->
+<script src="https://fastly.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/index.min.js"></script>
 
 <script>
   (async () => {
