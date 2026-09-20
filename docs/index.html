@@ -1543,6 +1543,11 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
 
 <script>
   (async () => {
+    // 手机端或竖屏不显示看板娘；平板横屏可以显示
+    const isPhone = /Android.*Mobile|iPhone|iPod/i.test(navigator.userAgent);
+    const isPortrait = window.innerHeight > window.innerWidth;
+    if (isPhone || isPortrait) return;
+
     const app = new PIXI.Application({
       view: document.createElement('canvas'),
       transparent: true,
@@ -1588,73 +1593,74 @@ document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeImg
     let bubbleEl = null;
 
     // 显示气泡
-function showBubble(text) {
-  if (bubbleEl) bubbleEl.remove();
-  bubbleEl = document.createElement('div');
-  bubbleEl.id = 'live2d-bubble';
-  bubbleEl.textContent = text;
-  bubbleEl.style.cssText = `
-    position: fixed;
-    left: 20px;
-    bottom: 200px;
-    z-index: 1001;
-    background: #fff;
-    color: #3a3530;
-    padding: 12px 18px;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px rgba(160,130,100,.2);
-    font-size: 14px;
-    font-weight: 600;
-    max-width: 240px;
-    line-height: 1.5;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .5s ease;
-  `;
-  document.body.appendChild(bubbleEl);
+    function showBubble(text) {
+      if (bubbleEl) bubbleEl.remove();
+      bubbleEl = document.createElement('div');
+      bubbleEl.id = 'live2d-bubble';
+      bubbleEl.textContent = text;
+      bubbleEl.style.cssText = `
+        position: fixed;
+        left: 20px;
+        bottom: 200px;
+        z-index: 1001;
+        background: #fff;
+        color: #3a3530;
+        padding: 12px 18px;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(160,130,100,.2);
+        font-size: 14px;
+        font-weight: 600;
+        max-width: 240px;
+        line-height: 1.5;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .5s ease;
+      `;
+      document.body.appendChild(bubbleEl);
 
-  requestAnimationFrame(() => {
-    if (bubbleEl) bubbleEl.style.opacity = '1';
-  });
+      requestAnimationFrame(() => {
+        if (bubbleEl) bubbleEl.style.opacity = '1';
+      });
 
-  let left = 20;
-  let bottom = 200;
-  let vx = (Math.random() - 0.5) * 2;
-  let vy = (Math.random() - 0.5) * 2;
+      let left = 20;
+      let bottom = 200;
+      let vx = (Math.random() - 0.5) * 2;
+      let vy = (Math.random() - 0.5) * 2;
 
-  let rafId = null;
-  const startTime = Date.now();
+      let rafId = null;
+      const startTime = Date.now();
 
-  function drift() {
-    if (!bubbleEl) return;   // 👈 关键
+      function drift() {
+        if (!bubbleEl) return;
 
-    if (left < 0 || left > 200) vx = -vx;
-    if (bottom < 120 || bottom > 470) vy = -vy;
+        if (left < 0 || left > 200) vx = -vx;
+        if (bottom < 120 || bottom > 470) vy = -vy;
 
-    left += vx;
-    bottom += vy;
+        left += vx;
+        bottom += vy;
 
-    bubbleEl.style.left = left + 'px';
-    bubbleEl.style.bottom = bottom + 'px';
+        bubbleEl.style.left = left + 'px';
+        bubbleEl.style.bottom = bottom + 'px';
 
-    if (Date.now() - startTime < 8000) {
+        if (Date.now() - startTime < 2500) {
+          rafId = requestAnimationFrame(drift);
+        }
+      }
+
       rafId = requestAnimationFrame(drift);
-    }
-  }
 
-  rafId = requestAnimationFrame(drift);
-
-  clearTimeout(bubbleEl._t);
-  bubbleEl._t = setTimeout(() => {
-    cancelAnimationFrame(rafId);
-    if (bubbleEl) {
-      bubbleEl.style.opacity = '0';
-      setTimeout(() => {
-        if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
-      }, 500);
+      clearTimeout(bubbleEl._t);
+      bubbleEl._t = setTimeout(() => {
+        cancelAnimationFrame(rafId);
+        if (bubbleEl) {
+          bubbleEl.style.opacity = '0';
+          setTimeout(() => {
+            if (bubbleEl) { bubbleEl.remove(); bubbleEl = null; }
+          }, 500);
+        }
+      }, 2500);
     }
-  }, 2500);
-}
+
     async function loadModel(index) {
       if (currentModel) {
         app.stage.removeChild(currentModel);
@@ -1677,8 +1683,8 @@ function showBubble(text) {
 
     // 只在左下角区域点击时触发
     document.addEventListener('click', (e) => {
-      const zoneWidth = 300;    // 区域宽度
-      const zoneHeight = 400;   // 区域高度
+      const zoneWidth = 300;
+      const zoneHeight = 400;
       const inZone = e.clientX < zoneWidth && e.clientY > window.innerHeight - zoneHeight;
       if (!inZone) return;
 
