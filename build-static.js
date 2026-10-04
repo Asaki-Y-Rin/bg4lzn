@@ -4,7 +4,8 @@
 //   docs/index.html      —— 主站 SPA (内联 CSS/JS + __DATA__ + static-shim)
 //   docs/welcome.html    —— 欢迎页 (相对路径版)
 //   docs/static-shim.js  —— 只读 API shim
-//   docs/picture/ docs/uploads/ docs/backgroud/  —— 静态资源
+//   docs/uploads/        —— 运行时图片目录 (随仓库为空, 见 .gitignore)
+//   docs/22 33 22_high 33_high kuroko mikoto —— Live2D 模型 (随仓库分发)
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -91,7 +92,8 @@ fs.copyFileSync(path.join(ROOT, 'static-shim.js'), path.join(DOCS, 'static-shim.
 
 // 静态资源 (picture.jpg / backgroud.gif 均已改用 i.ibb.co 快速外链, 不再随站分发)
 fs.rmSync(path.join(DOCS, 'backgroud'), { recursive: true, force: true });
-fs.cpSync(path.join(PUB, 'uploads'), path.join(DOCS, 'uploads'), { recursive: true });
+// uploads/ 不再随站点复制: 仓库里 public/uploads 保持空目录, 运行时上传只落服务器本地。
+// docs/uploads 只作为目录占位; 前端封面/插图走 i.ibb.co 外链。
 
 // 彩蛋页 (public/ce/ -> docs/ce/, 路径 bg4lzn.online/ce; public/l/ -> docs/l/, 路径 bg4lzn.online/l)
 fs.cpSync(path.join(PUB, 'ce'), path.join(DOCS, 'ce'), { recursive: true });
@@ -117,6 +119,9 @@ adminJs = adminJs.split("location.href = '/adminlogin'").join("location.href = '
 fs.writeFileSync(path.join(DOCS, 'js', 'admin.js'), adminJs, 'utf8');
 // 清理旧 picture 目录 (外链后不再需要)
 fs.rmSync(path.join(DOCS, 'picture'), { recursive: true, force: true });
+
+// GitHub Pages 不跑 Jekyll, 避免以下划线开头的资源被忽略
+fs.writeFileSync(path.join(DOCS, '.nojekyll'), '');
 
 console.log('静态版已生成于 docs/:');
 console.log('  index.html ' + (fs.statSync(path.join(DOCS, 'index.html')).size / 1024).toFixed(0) + ' KB');

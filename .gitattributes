@@ -1,0 +1,17 @@
+# 统一换行符，避免 Windows/macOS/Linux 之间来回改写工作区文件
+* text=auto eol=lf
+
+# 二进制资源不做换行转换
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.avif binary
+*.ico  binary
+*.moc  binary
+*.mtn  binary
+
+# Windows 批处理保持 CRLF
+*.bat  text eol=crlf
+*.cmd  text eol=crlf

@@ -1,0 +1,43 @@
+name: Build static site (docs/)
+
+# docs/ 是 build-static.js 的产物（index.html 内联了 CSS/JS/数据）。
+# 此工作流在每次推送后重建 docs/，保证 GitHub Pages 上的静态版和 public/ 源文件一致。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+      - 'data/**'
+      - 'static-shim.js'
+      - 'build-static.js'
+      - '.github/workflows/build-static.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Rebuild docs/
+        run: node build-static.js
+
+      # build-static.js 不重新生成 Live2D 模型目录，只重新生成页面/样式/脚本。
+      - name: Show what changed
+        run: git status --porcelain || true
+
+      - name: Upload docs/ artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: docs/
+          retention-days: 14

@@ -1,10 +1,19 @@
-# deps
+# ---- 依赖 ----
 node_modules/
 
-# runtime data (keys 私钥 / uploads 运行时上传 不入库)
+# ---- 密钥 / 运行时上传（绝不入库）----
 data/keys/
 data/uploads/
+public/uploads/*
+!public/uploads/.gitkeep
 
+# ---- 静态导出里的运行时上传（随仓库为空）----
+docs/uploads/*
+!docs/uploads/.gitkeep
+
+# ---- OS / 编辑器杂物 ----
 *.log
 .DS_Store
 Thumbs.db
+desktop.ini
+*.swp

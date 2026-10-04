@@ -12,9 +12,12 @@
 bg4lzn-blog/
 ├─ server.js          # Express 后端：静态资源 + 全部 API + 后台 + HTTP/HTTPS 自动切换
 ├─ adif.js            # ADIF 通联日志解析模块（后台导入 .adi / LoTW）
+├─ build-static.js    # 导出 GitHub Pages 静态版到 docs/
+├─ sync-articles.js   # 从内堂 API 同步文章到 data/articles.json
+├─ static-shim.js     # 静态版只读 API shim（构建时内联进 docs/index.html）
 ├─ package.json       # 依赖 (express/multer/cookie-parser/node-forge/adm-zip)
 ├─ run.bat            # Windows 一键启动
-├─ .gitignore         # 忽略 node_modules 等
+├─ .gitignore         # 忽略 node_modules / 私钥 / 运行时上传
 ├─ public/            # ===== 前端 =====
 │  ├─ main.html       #   主站 SPA（首页/文章/日志/关于/留言板）
 │  ├─ welcome.html    #   视频欢迎页
@@ -25,9 +28,14 @@ bg4lzn-blog/
 │  ├─ js/i18n.js      #   中英双语文案
 │  ├─ js/particles.js #   装饰粒子
 │  ├─ js/admin.js     #   后台逻辑（仪表盘/文章/日志/LoTW/留言/评论/站点）
-│  ├─ backgroud/backgroud.mp4  # 欢迎页视频
-│  ├─ picture/picture.jpg      # logo / 头像
-│  └─ uploads/        #   文章封面/插图（上传落这里）
+│  ├─ kuroko/         #   Live2D 看板娘模型
+│  ├─ ce/ · l/        #   彩蛋页
+│  └─ uploads/        #   文章图片上传落这里（空目录, 内容不入库）
+├─ docs/              # ===== GitHub Pages 静态站 (build-static.js 产物) =====
+│  ├─ index.html      #   内联 CSS/JS/__DATA__ 的单文件主站
+│  ├─ 22/ 33/ 22_high/ 33_high/ kuroko/ mikoto/   # Live2D 模型
+│  ├─ CNAME           #   自定义域名 bg4lzn.online
+│  └─ uploads/        #   空目录 (运行时上传内容不入库)
 └─ data/              # ===== JSON 数据存储 =====
    ├─ articles.json   # 文章 (含 views/likes/comments)
    ├─ logs.json       # 通联日志 (每条约 call/band/mode/freq/date/time/rst/grid)
@@ -40,6 +48,10 @@ bg4lzn-blog/
 ```
 
 > 生产部署时，以上为 `/opt/bg4lzn/`；密钥（LoTW 证书、后台密码）放 `chmod 600` 的环境文件，不进仓库。
+>
+> **关于图片**：文章封面/插图统一走 `i.ibb.co` 外链，`public/uploads/` 与 `docs/uploads/`
+> 在仓库里保持空目录，只作为运行时上传的落地位置。因此仓库体积约 13 MB，
+> 不包含任何大体积运行时素材。
 
 ---
 
@@ -84,6 +96,25 @@ bg4lzn-blog/
   | 后台·管理 | `http://localhost:3000/adminlogin` | `admin` / `admin` |
 - 依赖已在 `node_modules/`（纯 JS，免编译）。若重装：`npm install`（国内 `--registry=https://registry.npmmirror.com`）。
 - 默认端口 3000（`process.env.PORT` 可改）。
+
+### 3.1 本地生成 GitHub Pages 静态版
+
+`docs/` 是构建产物，不是手写文件。改了 `public/` 或 `data/` 之后重新生成：
+
+```bash
+node build-static.js
+```
+
+产物：`docs/index.html`（内联 CSS/JS/`__DATA__` 的单文件主站）、`docs/welcome.html`、
+`docs/admin*.html`、`docs/css`、`docs/js`、`docs/.nojekyll`。
+`docs/22`、`docs/33`、`docs/kuroko`、`docs/mikoto` 等 Live2D 模型目录**不由该脚本生成**，
+随仓库分发，脚本不会删除或覆盖它们。
+
+> `docs/uploads/` 与 `public/uploads/` 在仓库里都是空目录：文章图片走 `i.ibb.co` 外链，
+> 运行时上传只落在本地服务器，`.gitignore` 已排除其内容。
+>
+> 推送后 `.github/workflows/build-static.yml` 会自动跑一次 `node build-static.js`，
+> 方便确认静态版能正常构建（并上传 artifact）。
 
 ---
 
