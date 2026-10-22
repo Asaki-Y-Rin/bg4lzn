@@ -1,16 +1,5 @@
 [
   {
-    "id": "7",
-    "title": "公告",
-    "date": "2026-10-15",
-    "cover": "",
-    "excerpt": "历经13天，BG4LZN.online终于恢复了 github将我的账户封禁了，申请解封经历10多天毫无音讯。在此深度谴责github。 现将blog迁移至cloudflare，国内访问速度正在逐步优化。 再次对github表达深度、严厉、强烈、坚决、严正、猛烈的谴责。",
-    "content_md": "历经13天，BG4LZN.online终于恢复了\ngithub将我的账户封禁了，申请解封经历10多天毫无音讯。在此深度谴责github。\n现将blog迁移至cloudflare，国内访问速度正在逐步优化。\n再次对github表达深度、严厉、强烈、坚决、严正、猛烈的谴责。",
-    "likes": 0,
-    "comments": 0,
-    "slug": "公告"
-  },
-  {
     "id": "6",
     "title": "用一台旧笔记本搭一个 HamClock 社区后端节点",
     "date": "2026-09-19",
