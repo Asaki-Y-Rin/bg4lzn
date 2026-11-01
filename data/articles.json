@@ -42,7 +42,7 @@
     "likes": 3,
     "comments": 0,
     "slug": "初踏电磁生众趣",
-    "views": 1
+    "views": 2
   },
   {
     "id": "2",
@@ -53,6 +53,7 @@
     "content_md": "欢迎在留言板留下您的足迹！GL! DE BG4LZN",
     "likes": 2,
     "comments": 0,
-    "slug": "guestbook"
+    "slug": "guestbook",
+    "views": 1
   }
 ]
