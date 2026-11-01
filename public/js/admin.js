@@ -96,7 +96,7 @@ async function articles() {
             <td>${a.views||0}</td>
             <td>${(a.likes||[]).length}</td>
             <td>${a._cc || 0}</td>
-            <td>${a.published ? '<span class="badge green">已发布</span>' : '<span class="badge grey">草稿</span>'}</td>
+            <td>${a.published !== false ? '<span class="badge green">已发布</span>' : '<span class="badge grey">草稿</span>'}</td>
             <td><div class="flex"><button class="icon-btn" onclick="editArticle('${a.id}')">编辑</button><button class="icon-btn danger" onclick="delArticle('${a.id}')">删</button></div></td>
           </tr>`).join('')}</tbody>
         </table>

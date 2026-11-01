@@ -381,6 +381,14 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), { 
 // no-store on HTML + API responses so browsers always fetch the latest frontend code
 app.use((req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 
+// ---------- 文章可见性 / 计数 ----------
+// 旧数据与 sync-articles.js 产出的记录没有 published 字段，缺省视为「已发布」；
+// 只有显式 published:false 才当草稿隐藏（与后台编辑页 a.published!==false 的默认值一致）。
+const isPublished = (a) => !!a && a.published !== false;
+// likes 可能是数组（本站点赞）/ 数字（同步脚本的 like_count）/ 缺失，统一取数，避免 .length 抛错。
+const likeCount = (a) => Array.isArray(a.likes) ? a.likes.length : (Number.isFinite(a.likes) ? a.likes : 0);
+const likeArray = (a) => Array.isArray(a.likes) ? a.likes : Array.from({ length: Number.isFinite(a.likes) ? a.likes : 0 }, (_, i) => 'legacy' + i);
+
 // ---------- PUBLIC API ----------
 app.get('/api/site', async (req, res) => {
   const site = await readJSON('site.json', DEFAULT_SITE);
@@ -394,14 +402,14 @@ app.get('/api/home', async (req, res) => {
     readJSON('logs.json', []),
     readJSON('guestbook.json', [])
   ]);
-  const published = articles.filter(a => a.published).sort((a,b) => new Date(b.date) - new Date(a.date));
+  const published = articles.filter(isPublished).sort((a,b) => new Date(b.date) - new Date(a.date));
   const onAirInfo = await getOnAirInfo(site);
   const ccmap = await bbsCommentCountMap();
   res.json({
     ok: true,
     site,
     callsign: site.callsign,
-    latestArticles: published.slice(0, 2).map(a => ({ ...a, comments: ccmap[a.id] || 0, likes: a.likes ? a.likes.length : 0 })),
+    latestArticles: published.slice(0, 2).map(a => ({ ...a, comments: ccmap[a.id] || 0, likes: likeCount(a) })),
     logCount: logs.length,
     totalArticles: published.length,
     messageCount: await bbsGuestbookCount(),
@@ -413,12 +421,12 @@ app.get('/api/home', async (req, res) => {
 app.get('/api/articles', async (req, res) => {
   const articles = await readJSON('articles.json', []);
   const acmap = await bbsCommentCountMap();
-  const published = articles.filter(a => a.published)
+  const published = articles.filter(isPublished)
     .sort((a,b) => new Date(b.date) - new Date(a.date))
     .map(a => ({
       id: a.id, title: a.title, title_en: a.title_en, tags: a.tags, tags_en: a.tags_en,
       date: a.date, cover: a.cover, excerpt: a.excerpt, excerpt_en: a.excerpt_en,
-      likes: a.likes.length, comments: acmap[a.id] || 0, views: a.views
+      likes: likeCount(a), comments: acmap[a.id] || 0, views: a.views
     }));
   res.json({ ok: true, articles: published });
 });
@@ -429,7 +437,10 @@ app.get('/api/articles/:id', async (req, res) => {
   if (!a) return res.status(404).json({ ok: false, error: 'not_found' });
   a.views = (a.views || 0) + 1;
   await writeJSON('articles.json', articles);
-  res.json({ ok: true, article: a, liked: Array.isArray(a.likes) && a.likes.includes(req.ip), myIp: req.ip });
+  const article = Object.assign({}, a);
+  if (article.content == null && article.content_md != null) article.content = article.content_md;
+  article.likes = likeArray(a);
+  res.json({ ok: true, article, liked: Array.isArray(a.likes) && a.likes.includes(req.ip), myIp: req.ip });
 });
 
 app.post('/api/articles/:id/comment', async (req, res) => {
@@ -438,6 +449,7 @@ app.post('/api/articles/:id/comment', async (req, res) => {
   const articles = await readJSON('articles.json', []);
   const a = articles.find(x => x.id === req.params.id);
   if (!a) return res.status(404).json({ ok: false, error: 'not_found' });
+  if (!Array.isArray(a.comments)) a.comments = [];
   a.comments.push({
     id: uid(), name: (name || 'Anonymous').slice(0, 30), text: text.slice(0, 2000),
     ip: req.ip, date: nowISO()
@@ -450,7 +462,7 @@ app.post('/api/articles/:id/like', async (req, res) => {
   const articles = await readJSON('articles.json', []);
   const a = articles.find(x => x.id === req.params.id);
   if (!a) return res.status(404).json({ ok: false, error: 'not_found' });
-  if (!Array.isArray(a.likes)) a.likes = [];
+  a.likes = likeArray(a);
   const ip = req.ip || '';
   const wasLiked = a.likes.includes(ip);
   if (wasLiked) a.likes = a.likes.filter(x => x !== ip);
@@ -803,7 +815,7 @@ function adminApi(routerPath) {
       articles: articles.length,
       logs: logs.length,
       guestbook: await bbsGuestbookCount(),
-      logLikes: articles.reduce((s,a)=>s+(a.likes? a.likes.length:0),0),
+      logLikes: articles.reduce((s,a)=>s+likeCount(a),0),
       comments: await bbsCommentsCount(),
     });
   });

@@ -423,7 +423,7 @@ async function renderArticleDetail(id) {
         <div class="like-bar">
           <button class="like-btn ${liked ? 'active' : ''}" id="likeBtn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="${liked ? '#f0795a' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-            <span id="likeCount">${(article.likes || []).length}</span> ${escapeHtml(liked ? cs.liked : cs.like)}
+            <span id="likeCount">${Array.isArray(article.likes) ? article.likes.length : (article.likes || 0)}</span> ${escapeHtml(liked ? cs.liked : cs.like)}
           </button>
         </div>
         <div class="comments">
