@@ -471,6 +471,29 @@ app.post('/api/articles/:id/like', async (req, res) => {
   res.json({ ok: true, liked: !wasLiked, count: a.likes.length });
 });
 
+app.get('/api/qsl', async (req, res) => {
+  // data/qsl.json 里是手工登记的卡片；logs.json 里 qsl_sent/qsl_rcvd=Y 的通联也会自动列出
+  const [manual, logs] = await Promise.all([readJSON('qsl.json', []), readJSON('logs.json', [])]);
+  const yes = v => String(v || '').toUpperCase() === 'Y';
+  const derived = (Array.isArray(logs) ? logs : [])
+    .filter(q => q && (yes(q.qsl_sent) || yes(q.qsl_rcvd)))
+    .map(q => {
+      const sent = yes(q.qsl_sent), rcvd = yes(q.qsl_rcvd);
+      return {
+        date: q.date || '', call: q.call || '', band: q.band || '', mode: q.mode || '',
+        status: sent && rcvd ? 'both' : (sent ? 'sent' : 'received'),
+        note: [q.country, q.qsl_sent ? 'TX ' + q.qsl_sent : '', q.qsl_rcvd ? 'RX ' + q.qsl_rcvd : ''].filter(Boolean).join(' · ')
+      };
+    });
+  const qsl = (Array.isArray(manual) ? manual : []).concat(derived);
+  const stats = {
+    sent: qsl.filter(q => q.status === 'sent' || q.status === 'both').length,
+    received: qsl.filter(q => q.status === 'received' || q.status === 'both').length,
+    both: qsl.filter(q => q.status === 'both').length,
+  };
+  res.json({ ok: true, qsl, stats });
+});
+
 app.get('/api/logs', async (req, res) => {
   const [logs, lotw] = await Promise.all([readJSON('logs.json', []), readJSON('lotw.json', null)]);
   const site = await readJSON('site.json', DEFAULT_SITE);
