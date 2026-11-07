@@ -1,1 +1,474 @@
-[]
+[
+  {
+    "date": "2026-09-15",
+    "call": "BA4LHE",
+    "band": "",
+    "mode": "",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "2026-09-13",
+    "call": "BA4LHY",
+    "band": "BR4IAA",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "2026-09-04",
+    "call": "BH6BMJ",
+    "band": "20",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "2026-08-31",
+    "call": "BA4IHB",
+    "band": "",
+    "mode": "",
+    "status": "received",
+    "note": "EB"
+  },
+  {
+    "date": "2026-08-28",
+    "call": "BA4IFR",
+    "band": "-",
+    "mode": "-",
+    "status": "received",
+    "note": "EB"
+  },
+  {
+    "date": "2026-08-03",
+    "call": "BG2GWF",
+    "band": "BR4IAA",
+    "mode": "FM",
+    "status": "both",
+    "note": "WITH EB"
+  },
+  {
+    "date": "",
+    "call": "BA4KVQ",
+    "band": "BR4IAA",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IFR",
+    "band": "20",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "B4/BH8GIF",
+    "band": "BR4IAA",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA7SAY",
+    "band": "20",
+    "mode": "FT8",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG5JKZ",
+    "band": "15",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BD7PWM",
+    "band": "15",
+    "mode": "CW",
+    "status": "both",
+    "note": "P2P"
+  },
+  {
+    "date": "",
+    "call": "BX4AFI",
+    "band": "20",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BX4AFI",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BH9CXY",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG9EQM",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG9EQM",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BD8CJS",
+    "band": "40",
+    "mode": "CW",
+    "status": "both",
+    "note": "HF Fs."
+  },
+  {
+    "date": "",
+    "call": "BI8AQ",
+    "band": "15",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BH7FUC",
+    "band": "40",
+    "mode": "CW",
+    "status": "both",
+    "note": "HF Fs."
+  },
+  {
+    "date": "",
+    "call": "BG7KEE",
+    "band": "438.7",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BI6PML",
+    "band": "40",
+    "mode": "FT8",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BH6AXT",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BH6AXT",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG5EFM",
+    "band": "0.7M",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG5EFM",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG5JRX",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IRQ",
+    "band": "439.175",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IHB",
+    "band": "0.7M",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IHB",
+    "band": "0.7M",
+    "mode": "SSTV",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IHB",
+    "band": "0.7M",
+    "mode": "FT8",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IHB",
+    "band": "0.7M",
+    "mode": "RTTY",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IHB",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IHB",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IHB",
+    "band": "439.9",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4JBU",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BH4HTD",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BI4JVV",
+    "band": "439.175",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG4JUT",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG4JUT",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4JBN",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IRS",
+    "band": "438.7",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IRS",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG4LZM",
+    "band": "BR4IAA",
+    "mode": "FM",
+    "status": "received",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4IIM",
+    "band": "0.7M",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG4LZO",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BI4IWL",
+    "band": "20",
+    "mode": "FT8",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4INO",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG4LZM",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BI4LOP",
+    "band": "40",
+    "mode": "CW",
+    "status": "both",
+    "note": "HF Fs."
+  },
+  {
+    "date": "",
+    "call": "BG4LZT",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG4LSU",
+    "band": "40",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BD3OIT",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BH2XBV",
+    "band": "40",
+    "mode": "CW",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BG2GQD",
+    "band": "20",
+    "mode": "USB",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BY2HIT",
+    "band": "20",
+    "mode": "FT8",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BI1VWH",
+    "band": "BR4MT",
+    "mode": "FM",
+    "status": "both",
+    "note": ""
+  },
+  {
+    "date": "",
+    "call": "BA4JBN",
+    "band": "20",
+    "mode": "USB",
+    "status": "received",
+    "note": "IOTA CONTEST"
+  },
+  {
+    "date": "",
+    "call": "BI1XJT",
+    "band": "20",
+    "mode": "CW",
+    "status": "both",
+    "note": "POTA"
+  }
+]
