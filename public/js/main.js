@@ -31,12 +31,33 @@ function escapeHtml(s) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-async function fetchJSON(url, opts) {
+// 静态版（www）如果自己的接口不可用，自动回落到动态站（裸域）的同一接口。
+// 裸域本身同源，不需要回落；只有 www 才知道另一台在哪。
+const FALLBACK_ORIGIN = /^www\./i.test(location.hostname) ? 'https://bg4lzn.online' : '';
+
+async function rawFetchJSON(url, opts) {
   const r = await fetch(url, opts);
   let data;
   try { data = await r.json(); } catch (e) { data = { ok: false, error: 'bad_json' }; }
   if (!r.ok || data.ok === false) throw new Error(data.error || '请求失败');
   return data;
+}
+
+async function fetchJSON(url, opts) {
+  try {
+    return await rawFetchJSON(url, opts);
+  } catch (err) {
+    // 只对 GET 且是本接口的路径做回落，写操作不重放（避免重复提交）
+    const isGet = !opts || !opts.method || String(opts.method).toUpperCase() === 'GET';
+    if (FALLBACK_ORIGIN && isGet && /^\/api\//.test(url)) {
+      try {
+        const data = await rawFetchJSON(FALLBACK_ORIGIN + url, opts);
+        if (!window.__psyche_fallback){ window.__psyche_fallback = true; if (typeof toast === 'function') toast('已切换到备用节点'); }
+        return data;
+      } catch (e2) { /* 两边都失败，抛原始错误 */ }
+    }
+    throw err;
+  }
 }
 function toast(msg) {
   const el = document.getElementById('toast');

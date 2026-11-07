@@ -378,6 +378,32 @@ app.use('/backgroud', express.static(path.join(__dirname, 'backgroud'), { maxAge
 app.use('/picture', express.static(path.join(__dirname, 'picture'), { maxAge: '365d' }));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), { maxAge: '30d' }));
 
+// ---------- 跨源（静态站 www 回落用） ----------
+const ALLOWED_ORIGINS = new Set(['https://bg4lzn.online', 'https://www.bg4lzn.online']);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.has(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Max-Age', '86400');
+  }
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  next();
+});
+
+// 健康检查：给外部探活 / 前端切换用（不缓存）
+app.get('/healthz', async (req, res) => {
+  try {
+    const articles = await readJSON('articles.json', []);
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ ok: true, time: Date.now(), articles: Array.isArray(articles) ? articles.length : 0 });
+  } catch (e) {
+    res.status(503).json({ ok: false });
+  }
+});
+
 // no-store on HTML + API responses so browsers always fetch the latest frontend code
 app.use((req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 
