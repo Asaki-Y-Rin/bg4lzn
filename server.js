@@ -3,6 +3,7 @@
 const express = require('express');
 const multer = require('multer');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
@@ -14,6 +15,7 @@ const AdmZip = require('adm-zip');
 const { parseADIF } = require('./adif');
 
 const app = express();
+app.use(compression({ threshold: 1024 }));
 const PORT = process.env.PORT || 3000;
 const BBS_BASE = 'http://127.0.0.1:' + PORT;
 const BBS_TOKEN = 'LOCAL_DEMO_TOKEN';
@@ -371,12 +373,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Static assets
-app.use('/css', express.static(path.join(__dirname, 'public', 'css'), { setHeaders: (res) => res.setHeader('Cache-Control', 'no-store') }));
-app.use('/js', express.static(path.join(__dirname, 'public', 'js'), { setHeaders: (res) => res.setHeader('Cache-Control', 'no-store') }));
-app.use('/img', express.static(path.join(__dirname, 'public', 'img'), { setHeaders: (res) => res.setHeader('Cache-Control', 'no-store') }));
-app.use('/backgroud', express.static(path.join(__dirname, 'backgroud'), { maxAge: '365d' }));
-app.use('/picture', express.static(path.join(__dirname, 'picture'), { maxAge: '365d' }));
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), { maxAge: '30d' }));
+app.use('/css', express.static(path.join(__dirname, 'public', 'css'), { setHeaders: (res) => res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400') }));
+app.use('/js', express.static(path.join(__dirname, 'public', 'js'), { setHeaders: (res) => res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400') }));
+app.use('/img', express.static(path.join(__dirname, 'public', 'img'), { setHeaders: (res) => res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400') }));
+app.use('/backgroud', express.static(path.join(__dirname, 'backgroud'), { maxAge: '365d', immutable: true }));
+app.use('/picture', express.static(path.join(__dirname, 'picture'), { maxAge: '365d', immutable: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), { maxAge: '365d', immutable: true }));
 
 // ---------- 跨源（静态站 www 回落用） ----------
 const ALLOWED_ORIGINS = new Set(['https://bg4lzn.online', 'https://www.bg4lzn.online']);
@@ -404,8 +406,25 @@ app.get('/healthz', async (req, res) => {
   }
 });
 
-// no-store on HTML + API responses so browsers always fetch the latest frontend code
-app.use((req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
+// 缓存策略（全部免费，不依赖付费功能）：
+//  - HTML：浏览器端 max-age=0 每次校验，但允许边缘缓存 2 分钟（s-maxage），需要你在 CF 加一条 Cache Rule 才生效
+//  - 公开 GET 接口：边缘缓存 10 秒，削掉大部分 220ms 回源
+//  - 其余接口（后台/登录）：仍然 no-store
+const EDGE_API = /^\/api\/(site|home|articles|qsl|pota|logs)(\?|$)/;
+app.use((req, res, next) => {
+  if (req.method === 'GET' && req.path.startsWith('/api/')) {
+    if (EDGE_API.test(req.path)) {
+      res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=10, stale-while-revalidate=60');
+    } else {
+      res.setHeader('Cache-Control', 'no-store');
+    }
+  } else if (req.method === 'GET' && /\.html?$|\/$/.test(req.path)) {
+    res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=120, stale-while-revalidate=60');
+  } else {
+    res.setHeader('Cache-Control', 'no-store');
+  }
+  next();
+});
 
 // ---------- 文章可见性 / 计数 ----------
 // 旧数据与 sync-articles.js 产出的记录没有 published 字段，缺省视为「已发布」；
