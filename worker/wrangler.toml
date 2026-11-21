@@ -1,0 +1,17 @@
+name = "bg4lzn-site-api"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# KV：复用现有的 BLOG_KV（数据用 site: 前缀隔离，避免和 dob-log 撞键）
+[[kv_namespaces]]
+binding = "KV"
+id = "f648cc687226493590cf2c67d2f257de"
+
+[vars]
+ALLOWED_ORIGINS = "https://bg4lzn.online,https://www.bg4lzn.online,https://bg4lzn.pages.dev"
+
+
+# 合并后端：其余路径全部转发给既有的 dob-log Worker
+[[services]]
+binding = "DOBLOG"
+service = "doblog"

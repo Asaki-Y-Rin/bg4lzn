@@ -35,8 +35,11 @@ function escapeHtml(s) {
 // 裸域本身同源，不需要回落；只有 www 才知道另一台在哪。
 const FALLBACK_ORIGIN = /^www\./i.test(location.hostname) ? 'https://bg4lzn.online' : '';
 
+const API2_BASE = 'https://api.bg4lzn.online';
+const abs = (u) => (u.startsWith('/api.php') ? API2_BASE + u : u);
+
 async function rawFetchJSON(url, opts) {
-  const r = await fetch(url, opts);
+  const r = await fetch(abs(url), opts);
   let data;
   try { data = await r.json(); } catch (e) { data = { ok: false, error: 'bad_json' }; }
   if (!r.ok || data.ok === false) throw new Error(data.error || '请求失败');
