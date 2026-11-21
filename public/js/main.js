@@ -201,6 +201,24 @@ function aboutView() {
   ];
   const addrZh = '请通过邮箱联系索取 QSL 卡。';
   const addrEn = 'Contact me via email for QSL.';
+  // ===== 友情链接（按需增删） =====
+  const links = state.lang === 'zh' ? [
+    { name: 'BA4IHB',  url: 'https://ba4ihb.cn',             desc: 'BA4IHB 的博客' },
+    { name: 'QRZ.com', url: 'https://www.qrz.com/db/BG4LZN', desc: '我的 QRZ 主页' },
+    { name: 'QLHAM',   url: 'https://www.qlham.com',         desc: '齐鲁 HAM 网' },
+    { name: 'CRAC',    url: 'https://www.crac.org.cn/',      desc: '中国无线电协会' }
+  ] : [
+    { name: 'BA4IHB',  url: 'https://ba4ihb.cn',             desc: "BA4IHB's Blog" },
+    { name: 'QRZ.com', url: 'https://www.qrz.com/db/BG4LZN', desc: 'My QRZ page' },
+    { name: 'QLHAM',   url: 'https://www.qlham.com',         desc: 'Qilu HAM Network' },
+    { name: 'CRAC',    url: 'https://www.crac.org.cn/',      desc: 'China Radio Association' }
+  ];
+  const linkItems = links.map(link => `
+    <a class="fl-item" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">
+      <span class="fl-name">${escapeHtml(link.name)}</span>
+      <span class="fl-desc">${escapeHtml(link.desc)}</span>
+    </a>`).join('');
+
   return `
   <div style="padding:26px 0 10px;">
     <h1 class="section-title">${escapeHtml(a.title)}</h1>
@@ -234,6 +252,12 @@ function aboutView() {
             <pre>${escapeHtml(addrEn)}</pre>
           </div>
         </div>
+      </div>
+
+      <!-- ===== 友情链接 ===== -->
+      <div class="card about-card" style="margin-top:16px;">
+        <h5>${escapeHtml(pick('友情链接', 'Friend Links'))}</h5>
+        <div class="friend-links">${linkItems}</div>
       </div>
     </div>
   </div>`;
