@@ -206,12 +206,16 @@ function aboutView() {
     { name: 'BA4IHB',  url: 'https://ba4ihb.cn',             desc: 'BA4IHB 的博客' },
     { name: 'QRZ.com', url: 'https://www.qrz.com/db/BG4LZN', desc: '我的 QRZ 主页' },
     { name: 'QLHAM',   url: 'https://www.qlham.com',         desc: '齐鲁 HAM 网' },
-    { name: 'CRAC',    url: 'https://www.crac.org.cn/',      desc: '中国无线电协会' }
+    { name: 'CRAC',    url: 'https://www.crac.org.cn/',      desc: '中国无线电协会' },
+    { name: 'FAX 编码', url: 'https://fax.bg4lzn.online/',    desc: 'FAX 编码查询' },
+    { name: 'WATM 奖',  url: 'https://watmham.github.io/watm', desc: 'WATM 奖' }
   ] : [
     { name: 'BA4IHB',  url: 'https://ba4ihb.cn',             desc: "BA4IHB's Blog" },
     { name: 'QRZ.com', url: 'https://www.qrz.com/db/BG4LZN', desc: 'My QRZ page' },
     { name: 'QLHAM',   url: 'https://www.qlham.com',         desc: 'Qilu HAM Network' },
-    { name: 'CRAC',    url: 'https://www.crac.org.cn/',      desc: 'China Radio Association' }
+    { name: 'CRAC',    url: 'https://www.crac.org.cn/',      desc: 'China Radio Association' },
+    { name: 'FAX Code', url: 'https://fax.bg4lzn.online/',    desc: 'FAX code lookup' },
+    { name: 'WATM Award', url: 'https://watmham.github.io/watm', desc: 'WATM Award' }
   ];
   const linkItems = links.map(link => `
     <a class="fl-item" href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">
